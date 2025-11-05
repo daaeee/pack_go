@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль - Помощник переездов</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Manrope', sans-serif;
+        }
+        
+        :root {
+            --primary-blue: #003F66;
+            --dark-blue: #002338;
+            --orange: #FF6B35;
+            --green: #00CC88;
+            --light-bg: #FFF5E6;
+            --white: #FFFFFF;
+            --gray: #666666;
+            --light-gray: #9F9F9F;
+            --light-orange: #FFE0D1;
+        }
+        
+        body {
+            background: var(--light-bg);
+            color: var(--primary-blue);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
+            color: var(--white);
+            padding: 30px 0;
+            border-radius: 0 0 25px 25px;
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        
+        .logout-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: var(--orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 2rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .profile-info h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .profile-info p {
+            opacity: 0.8;
+            font-size: 1rem;
+        }
+        
+        /* Current Move */
+        .current-move {
+            background: var(--white);
+            margin: 30px 0;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .move-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .move-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--light-orange);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .move-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+        
+        .move-address {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: var(--primary-blue);
+        }
+        
+        .move-date {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Statistics */
+        .statistics {
+            margin: 40px 0;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: var(--primary-blue);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+        
+        .stat-icon.items {
+            background: var(--orange);
+        }
+        
+        .stat-icon.batches {
+            background: var(--green);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Previous Moves */
+        .previous-moves {
+            margin: 40px 0;
+        }
+        
+        .move-history {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+        }
+        
+        .completed-move {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .completed-move:last-child {
+            border-bottom: none;
+        }
+        
+        .completed-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--light-bg);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .completed-info h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary-blue);
+        }
+        
+        .completed-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        
+        .move-stats {
+            color: var(--light-gray);
+            font-size: 0.85rem;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .completed-move {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .current-move,
+            .move-history {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">
+                    <img src="images/лого.png" alt="Логотип" class="logo-img">
+                    <span>Помощник переездов</span>
+                </div>
+                <a href="index.html" class="logout-button">Выйти</a>
+            </nav>
+            
+            <div class="profile-header">
+                <div class="avatar" id="userAvatar">ИИ</div>
+                <div class="profile-info">
+                    <h1 id="userName">Иван Иванов</h1>
+                    <p id="userEmail">marie@example.com</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- Current Move -->
+        <section class="current-move">
+            <div class="move-header">
+                <div class="move-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z" fill="#FF6B35"/>
+                        <path d="M12 11.5C13.3807 11.5 14.5 10.3807 14.5 9C14.5 7.61929 13.3807 6.5 12 6.5C10.6193 6.5 9.5 7.61929 9.5 9C9.5 10.3807 10.6193 11.5 12 11.5Z" fill="white"/>
+                    </svg>
+                </div>
+                <div class="move-title">Текущий переезд</div>
+            </div>
+            <div class="move-address">ул. Пушкина</div>
+            <div class="move-date">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="4" width="18" height="17" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M3 10H21" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M8 2V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M16 2V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span>Начат: 15 сентября 2025</span>
+            </div>
+        </section>
+        
+        <!-- Statistics -->
+        <section class="statistics">
+            <h2 class="section-title">Статистика переезда</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon items">
+                        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+                            <rect x="8" y="8" width="16" height="16" rx="2" stroke="white" stroke-width="2"/>
+                            <rect x="12" y="12" width="8" height="3" stroke="white" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="stat-number">154</div>
+                    <div class="stat-label">Всего вещей</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon batches">
+                        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+                            <rect x="6" y="12" width="20" height="12" rx="2" stroke="white" stroke-width="2"/>
+                            <rect x="10" y="24" width="5" height="4" rx="1" stroke="white" stroke-width="2"/>
+                            <rect x="20" y="24" width="5" height="4" rx="1" stroke="white" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Партии доставки</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Previous Moves -->
+        <section class="previous-moves">
+            <h2 class="section-title">История переездов</h2>
+            <div class="move-history">
+                <div class="completed-move">
+                    <div class="completed-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z" fill="#9F9F9F"/>
+                            <path d="M12 11.5C13.3807 11.5 14.5 10.3807 14.5 9C14.5 7.61929 13.3807 6.5 12 6.5C10.6193 6.5 9.5 7.61929 9.5 9C9.5 10.3807 10.6193 11.5 12 11.5Z" fill="white"/>
+                        </svg>
+                    </div>
+                    <div class="completed-info">
+                        <h3>ул. Ленина, д 10, кв 5</h3>
+                        <div class="completed-date">Завершен: 15 марта 2024</div>
+                        <div class="move-stats">127 вещей • 3 партии • Завершен</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Умный помощник для переездов. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Load user data
+        document.addEventListener('DOMContentLoaded', function() {
+            const userName = localStorage.getItem('userName');
+            const userEmail = localStorage.getItem('userEmail');
+            
+            if (userName && userEmail) {
+                document.getElementById('userName').textContent = userName;
+                document.getElementById('userEmail').textContent = userEmail;
+                
+                // Create avatar from initials
+                const initials = userName.split(' ').map(name => name[0]).join('').toUpperCase();
+                document.getElementById('userAvatar').textContent = initials;
+            } else {
+                // Redirect to login if no user data
+                window.location.href = 'login.html';
+            }
+        });
+        
+        // Logout functionality
+        document.querySelector('.logout-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userPassword');
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Умный помощник для переездов</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Manrope', sans-serif;
+        }
+        
+        :root {
+            --primary-blue: #003F66;
+            --dark-blue: #002338;
+            --orange: #FF6B35;
+            --green: #00CC88;
+            --pink: #C2185B;
+            --light-bg: #FFF5E6;
+            --white: #FFFFFF;
+            --gray: #666666;
+            --light-gray: #9F9F9F;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #FFF5E6 0%, #FFE4C4 100%);
+            color: var(--primary-blue);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
+            color: var(--white);
+            padding: 40px 0;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 4px 20px rgba(0, 63, 102, 0.2);
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .logo-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-button {
+            padding: 10px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-button.login {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+        }
+        
+        .nav-button.register {
+            background: var(--orange);
+            color: var(--white);
+            border: 2px solid var(--orange);
+        }
+        
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        /* Features */
+        .features {
+            padding: 80px 0;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-top: 50px;
+        }
+        
+        .feature-card {
+            background: var(--white);
+            padding: 30px 20px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+        }
+        
+        .feature-icon.box {
+            background: var(--orange);
+        }
+        
+        .feature-icon.car {
+            background: var(--primary-blue);
+        }
+        
+        .feature-icon.qr {
+            background: var(--green);
+        }
+        
+        .feature-icon.checklist {
+            background: var(--pink);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-blue);
+        }
+        
+        .feature-card p {
+            color: var(--gray);
+            font-size: 1rem;
+            font-weight: 300;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
+            color: var(--white);
+            padding: 60px 0;
+            border-radius: 30px;
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .cta-section p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: var(--orange);
+            color: var(--white);
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .nav {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .features {
+                padding: 60px 0;
+            }
+            
+            .feature-card {
+                padding: 25px 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-button {
+                text-align: center;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">
+                    <img src="images/лого.png" alt="Логотип" class="logo-img">
+                    <span>Помощник переездов</span>
+                </div>
+                <div class="nav-buttons">
+                    <a href="login.html" class="nav-button login">Войти</a>
+                    <a href="register.html" class="nav-button register">Регистрация</a>
+                </div>
+            </nav>
+            
+            <div class="hero">
+                <h1>Умный помощник для переездов</h1>
+                <p>Превратите хаос переезда в организованный процесс. Полный контроль над вещами и графиком доставки</p>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Features -->
+    <section class="features">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon box">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect x="6" y="8" width="20" height="16" rx="2" stroke="white" stroke-width="2"/>
+                            <rect x="10" y="12" width="12" height="4" stroke="white" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>Цифровая инвентаризация</h3>
+                    <p>Фиксируйте все вещи с фото, категориями и комнатами назначения</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon car">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect x="6" y="12" width="20" height="12" rx="2" stroke="white" stroke-width="2"/>
+                            <rect x="10" y="24" width="6" height="4" rx="1" stroke="white" stroke-width="2"/>
+                            <rect x="20" y="24" width="6" height="4" rx="1" stroke="white" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>Умные партии доставки</h3>
+                    <p>Разделите переезд на этапы с удобным графиком доставки</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon qr">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect x="8" y="8" width="16" height="16" rx="2" stroke="white" stroke-width="2"/>
+                            <rect x="12" y="12" width="3" height="3" fill="white"/>
+                            <rect x="20" y="12" width="3" height="3" fill="white"/>
+                            <rect x="12" y="20" width="3" height="3" fill="white"/>
+                            <rect x="20" y="20" width="3" height="3" fill="white"/>
+                        </svg>
+                    </div>
+                    <h3>QR-распаковка</h3>
+                    <p>Сканируйте коробки и мгновенно находите нужные вещи</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon checklist">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect x="6" y="6" width="20" height="20" rx="2" stroke="white" stroke-width="2"/>
+                            <path d="M12 16L16 20L24 12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3>Чек-листы задач</h3>
+                    <p>Готовые шаблоны задач для организованного переезда</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Начните организовывать переезд сегодня</h2>
+            <p>Присоединяйтесь к тысячам пользователей, которые уже упростили свой переезд</p>
+            <a href="register.html" class="cta-button">Начать бесплатно</a>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Умный помощник для переездов. Все права защищены.</p>
+        </div>
+    </footer>
+</body>
+</html>
