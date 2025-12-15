@@ -1,150 +1,188 @@
 'use client';
 
+import { useState } from 'react';
+
+interface BoxItem {
+  id: number;
+  title: string;
+  room: string;
+  items: string[];
+  batchNumber: string;
+  boxId: string;
+  isUnpacked: boolean;
+}
+
 export default function UnpackingPage() {
+  const [boxes, setBoxes] = useState<BoxItem[]>([
+    {
+      id: 1,
+      title: "Коробка №1 - Посуда",
+      room: "Кухня",
+      items: ["Набор тарелок", "Чашки (6 шт)", "Столовые приборы", "Кастрюли (3 шт)"],
+      batchNumber: "Партия №1",
+      boxId: "BOX-001",
+      isUnpacked: true,
+    },
+    {
+      id: 2,
+      title: "Коробка №2 - Электроника",
+      room: "Гостиная",
+      items: ["Телевизор", "Пульты", "Роутер", "Колонка"],
+      batchNumber: "Партия №1",
+      boxId: "BOX-002",
+      isUnpacked: true,
+    },
+    {
+      id: 3,
+      title: "Коробка №3 - Постельное белье",
+      room: "Спальня",
+      items: ["Простыни (3 комплекта)", "Подушки", "Одеяла", "Плед"],
+      batchNumber: "Партия №1",
+      boxId: "BOX-003",
+      isUnpacked: false,
+    },
+    {
+      id: 4,
+      title: "Коробка №4 - Книги",
+      room: "Кабинет",
+      items: ["Учебники", "Журналы", "Фотоальбомы", "Художественная литература"],
+      batchNumber: "Партия №1",
+      boxId: "BOX-004",
+      isUnpacked: false,
+    },
+  ]);
+
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const unpackedCount = boxes.filter(box => box.isUnpacked).length;
+  const totalCount = boxes.length;
+  const progressPercentage = totalCount > 0 ? (unpackedCount / totalCount) * 100 : 0;
+
+  const filteredBoxes = boxes.filter(box => {
+    const matchesSearch = 
+      box.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      box.room.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      box.items.some(item => item.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesSearch;
+  });
+
   const handleScanClick = () => {
     alert('Функция сканирования QR-кода будет реализована в будущем');
   };
 
+  const toggleUnpacked = (boxId: number) => {
+    setBoxes(boxes.map(box => 
+      box.id === boxId ? { ...box, isUnpacked: !box.isUnpacked } : box
+    ));
+  };
+
   return (
-    <div id="unpacking-page" className="page unpacking-page">
+    <div id="unpacking-page" className="page unpacking-page active">
+      {/* Заголовок с фоновым блоком */}
       <div className="unpacking-header">
         <h1 className="unpacking-title">Распаковка</h1>
-        <div className="unpacking-subtitle">2 из 4 коробок распаковано</div>
-        <div className="unpacking-progress-text">50% выполнено</div>
+        <div className="unpacking-subtitle">
+          {unpackedCount} из {totalCount} коробок распаковано
+        </div>
+        <div className="unpacking-progress-text">{Math.round(progressPercentage)}% выполнено</div>
         
-        <div className="unpacking-progress-container"></div>
-        <div className="unpacking-progress-bar"></div>
+        {/* Прогресс-бар */}
+        <div className="unpacking-progress-container">
+          <div 
+            className="unpacking-progress-bar" 
+            style={{ width: `${progressPercentage}%` }}
+          ></div>
+        </div>
         
+        {/* Кнопка сканирования */}
         <div className="scan-section" onClick={handleScanClick}>
           <span className="scan-text">Сканировать QR-код</span>
         </div>
         
+        {/* Поле поиска */}
         <div className="unpacking-search-container">
           <div className="search-icon"></div>
-          <span className="unpacking-search-placeholder">Поиск по вещам или комнатам...</span>
+          <input
+            type="text"
+            className="unpacking-search-input"
+            placeholder="Поиск по вещам или комнатам..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              border: 'none',
+              background: 'transparent',
+              width: '100%',
+              marginLeft: '15px',
+              fontSize: '16px',
+              color: '#9F9F9F',
+              outline: 'none'
+            }}
+          />
         </div>
       </div>
       
+      {/* Список коробок */}
       <div className="boxes-container">
-        {/* Коробка 1 - Посуда */}
-        <div className="box-card">
-          <div className="box-icon green"></div>
-          <div className="check-icon">✓</div>
-          <h2 className="box-title">Коробка №1 - Посуда</h2>
-          <div className="box-room">Кухня</div>
-          
-          <div className="item-dot" style={{ top: '140px' }}></div>
-          <div className="box-items" style={{ top: '132px' }}>Набор тарелок</div>
-          
-          <div className="item-dot" style={{ top: '181px' }}></div>
-          <div className="box-items" style={{ top: '173px' }}>Чашки (6 шт)</div>
-          
-          <div className="item-dot" style={{ top: '222px' }}></div>
-          <div className="box-items" style={{ top: '214px' }}>Столовые приборы</div>
-          
-          <div className="item-dot" style={{ top: '263px' }}></div>
-          <div className="box-items" style={{ top: '255px' }}>Кастрюли (3 шт)</div>
-          
-          <div className="batch-tag">
-            <span className="batch-text">Партия №1</span>
+        {filteredBoxes.map((box) => (
+          <div key={box.id} className="box-card">
+            <div className={`box-icon ${box.isUnpacked ? 'green' : 'orange'}`}>
+              {box.isUnpacked ? (
+                <div className="check-icon">✓</div>
+              ) : (
+                <div className="box-icon-inner">📦</div>
+              )}
+            </div>
+            
+            <h2 className="box-title">{box.title}</h2>
+            <div className="box-room">{box.room}</div>
+            
+            {/* Список предметов в коробке */}
+            {box.items.map((item, index) => (
+              <div key={index}>
+                <div 
+                  className="item-dot" 
+                  style={{ top: `${140 + (index * 41)}px` }}
+                ></div>
+                <div 
+                  className="box-items" 
+                  style={{ top: `${132 + (index * 41)}px` }}
+                >
+                  {item}
+                </div>
+              </div>
+            ))}
+            
+            {/* Теги */}
+            <div className="batch-tag">
+              <span className="batch-text">{box.batchNumber}</span>
+            </div>
+            
+            {box.isUnpacked && (
+              <div className="unpacked-tag">
+                <span className="unpacked-text">Распаковано</span>
+              </div>
+            )}
+            
+            <div className="box-id">
+              <span className="box-id-text">{box.boxId}</span>
+            </div>
+            
+            {/* Скрытая кнопка для переключения статуса (можно кликнуть на всю карточку) */}
+            <div 
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                cursor: 'pointer',
+                opacity: 0
+              }}
+              onClick={() => toggleUnpacked(box.id)}
+              title={box.isUnpacked ? 'Отметить как нераспакованную' : 'Отметить как распакованную'}
+            ></div>
           </div>
-          
-          <div className="unpacked-tag">
-            <span className="unpacked-text">Распаковано</span>
-          </div>
-          
-          <div className="box-id">
-            <span className="box-id-text">BOX-001</span>
-          </div>
-        </div>
-        
-        {/* Коробка 2 - Электроника */}
-        <div className="box-card">
-          <div className="box-icon green"></div>
-          <div className="check-icon">✓</div>
-          <h2 className="box-title">Коробка №2 - Электроника</h2>
-          <div className="box-room">Гостиная</div>
-          
-          <div className="item-dot" style={{ top: '140px' }}></div>
-          <div className="box-items" style={{ top: '132px' }}>Телевизор</div>
-          
-          <div className="item-dot" style={{ top: '181px' }}></div>
-          <div className="box-items" style={{ top: '173px' }}>Пульты</div>
-          
-          <div className="item-dot" style={{ top: '222px' }}></div>
-          <div className="box-items" style={{ top: '214px' }}>Роутер</div>
-          
-          <div className="item-dot" style={{ top: '263px' }}></div>
-          <div className="box-items" style={{ top: '255px' }}>Колонка</div>
-          
-          <div className="batch-tag">
-            <span className="batch-text">Партия №1</span>
-          </div>
-          
-          <div className="unpacked-tag">
-            <span className="unpacked-text">Распаковано</span>
-          </div>
-          
-          <div className="box-id">
-            <span className="box-id-text">BOX-002</span>
-          </div>
-        </div>
-        
-        {/* Коробка 3 - Постельное белье */}
-        <div className="box-card">
-          <div className="box-icon orange"></div>
-          <div className="box-icon-inner">📦</div>
-          <h2 className="box-title">Коробка №3 - Постельное белье</h2>
-          <div className="box-room">Спальня</div>
-          
-          <div className="item-dot" style={{ top: '140px' }}></div>
-          <div className="box-items" style={{ top: '132px' }}>Простыни (3 комплекта)</div>
-          
-          <div className="item-dot" style={{ top: '181px' }}></div>
-          <div className="box-items" style={{ top: '173px' }}>Подушки</div>
-          
-          <div className="item-dot" style={{ top: '222px' }}></div>
-          <div className="box-items" style={{ top: '214px' }}>Одеяла</div>
-          
-          <div className="item-dot" style={{ top: '263px' }}></div>
-          <div className="box-items" style={{ top: '255px' }}>Плед</div>
-          
-          <div className="batch-tag">
-            <span className="batch-text">Партия №1</span>
-          </div>
-          
-          <div className="box-id">
-            <span className="box-id-text">BOX-003</span>
-          </div>
-        </div>
-        
-        {/* Коробка 4 - Книги */}
-        <div className="box-card">
-          <div className="box-icon orange"></div>
-          <div className="box-icon-inner">📦</div>
-          <h2 className="box-title">Коробка №4 - Книги</h2>
-          <div className="box-room">Кабинет</div>
-          
-          <div className="item-dot" style={{ top: '140px' }}></div>
-          <div className="box-items" style={{ top: '132px' }}>Учебники</div>
-          
-          <div className="item-dot" style={{ top: '181px' }}></div>
-          <div className="box-items" style={{ top: '173px' }}>Журналы</div>
-          
-          <div className="item-dot" style={{ top: '222px' }}></div>
-          <div className="box-items" style={{ top: '214px' }}>Фотоальбомы</div>
-          
-          <div className="item-dot" style={{ top: '263px' }}></div>
-          <div className="box-items" style={{ top: '255px' }}>Художественная литература</div>
-          
-          <div className="batch-tag">
-            <span className="batch-text">Партия №1</span>
-          </div>
-          
-          <div className="box-id">
-            <span className="box-id-text">BOX-004</span>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
