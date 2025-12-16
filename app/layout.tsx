@@ -1,25 +1,22 @@
+// app/layout.tsx
 import type { Metadata } from 'next';
-import { Manrope } from 'next/font/google';
-import './globals.css';
+import { Inter } from 'next/font/google';
+import './main.css';
+import './media.css';
 
-const manrope = Manrope({ 
-  subsets: ['latin', 'cyrillic'],
-  weight: ['300', '400', '500', '600']
-});
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Система управления переездом',
-  description: 'Приложение для управления инвентарем и переездом',
+  description: 'Pack&Go - система для управления процессом переезда',
 };
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ru">
-      <body className={manrope.className}>{children}</body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

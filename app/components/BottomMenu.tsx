@@ -1,56 +1,51 @@
-'use client';
+// app/components/BottomMenu.tsx
 
-import { PageType } from "C:/Users/Пользователь/pack_go/app/types";
+import React from 'react';
 
 interface BottomMenuProps {
-  currentPage: PageType;
-  onPageChange: (page: PageType) => void;
+  currentPage: string;
+  onPageChange: (page: string) => void;
 }
 
-export default function BottomMenu({ currentPage, onPageChange }: BottomMenuProps) {
-  const getMenuIconClass = (page: PageType) => {
-    return currentPage === page ? 'menu-icon active' : 'menu-icon inactive';
-  };
+const menuItems = [
+  { id: 'inventory', label: 'Инвентарь', number: '1' },
+  { id: 'boxes', label: 'Коробки', number: '2' },
+  { id: 'scanner', label: 'Сканер', number: '3' },
+  { id: 'delivery', label: 'Партии', number: '4' },
+  { id: 'unpacking', label: 'Распаковка', number: '5' },
+  { id: 'tasks', label: 'Задачи', number: '6' },
+  { id: 'profile', label: 'Профиль', number: '7' },
+];
 
-  const getMenuTextClass = (page: PageType) => {
-    return currentPage === page ? 'menu-text active' : 'menu-text inactive';
-  };
-
+const BottomMenu: React.FC<BottomMenuProps> = ({ currentPage, onPageChange }) => {
   return (
     <div className="bottom-menu">
-      <div 
-        className="menu-item" 
-        onClick={() => onPageChange('inventory')}
-      >
-        <div className={getMenuIconClass('inventory')}>1</div>
-        <div className={getMenuTextClass('inventory')}>Инвентарь</div>
-      </div>
-      
-      <div 
-        className="menu-item" 
-        onClick={() => onPageChange('delivery')}
-      >
-        <div className={getMenuIconClass('delivery')}>2</div>
-        <div className={getMenuTextClass('delivery')}>Партии</div>
-      </div>
-      
-      <div 
-        className="menu-item" 
-        onClick={() => onPageChange('unpacking')}
-      >
-        <div className={getMenuIconClass('unpacking')}>3</div>
-        <div className={getMenuTextClass('unpacking')}>Распаковка</div>
-      </div>
-      
-      <div className="menu-item">
-        <div className="menu-icon inactive">4</div>
-        <div className="menu-text inactive">Задачи</div>
-      </div>
-      
-      <div className="menu-item">
-        <div className="menu-icon inactive">5</div>
-        <div className="menu-text inactive">Профиль</div>
-      </div>
+      {menuItems.map(item => {
+        const isActive = currentPage === item.id;
+
+        return (
+          <div
+            key={item.id}
+            className="menu-item"
+            onClick={() => onPageChange(item.id)}
+          >
+            <div
+              id={`${item.id}-icon`}
+              className={`menu-icon ${isActive ? 'active' : 'inactive'}`}
+            >
+              {item.number}
+            </div>
+            <div
+              id={`${item.id}-text`}
+              className={`menu-text ${isActive ? 'active' : 'inactive'}`}
+            >
+              {item.label}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
-}
+};
+
+export default BottomMenu;

@@ -1,4 +1,4 @@
-export type PageType = 'inventory' | 'delivery' | 'unpacking';
+// app/types/index.ts
 
 export interface InventoryItem {
   id: number;
@@ -10,7 +10,7 @@ export interface InventoryItem {
   packed: boolean;
 }
 
-export interface DeliveryBatch {
+export interface Batch {
   id: number;
   name: string;
   date: string;
@@ -22,4 +22,30 @@ export interface DeliveryBatch {
   status: 'planned' | 'in-transit' | 'delivered';
 }
 
-export type FilterType = 'all' | 'furniture' | 'clothing' | 'electronics' | 'books' | 'kitchen';
+export interface Box {
+  id: number;
+  name: string;
+  room: string;
+  description: string;
+  status: 'empty' | 'assembling' | 'ready';
+  batchId: number;
+  icon: string;
+  unpacked: boolean;
+  itemsCount: number;
+  items: string[];
+}
+
+export interface Task {
+  id: number;
+  title: string;
+  description: string;
+  section: 'before' | 'during' | 'after';
+  date: string;
+  completed: boolean;
+}
+
+export interface HistoryItem {
+  address: string;
+  date: string;
+  stats: string;
+}

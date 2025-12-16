@@ -1,0 +1,604 @@
+/* Адаптивность */
+@media (max-width: 1200px) {
+    .container, .unpacking-page, .tasks-page, .profile-page {
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .stats, .stats-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .stat-card, .tasks-stat-card {
+        width: 80%;
+    }
+
+    .search-container {
+        width: 90%;
+        left: 5%;
+    }
+
+    .item-card {
+        width: 100%;
+    }
+
+    .filters {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 20px;
+    }
+
+    .modal-content {
+        width: 90%;
+        height: auto;
+        padding: 30px;
+    }
+
+    .form-input, .form-textarea, .form-select, .submit-button {
+        width: 100%;
+    }
+
+    .items-container {
+        padding: 20px 40px;
+    }
+
+    .batch-content {
+        width: calc(100% - 120px);
+        left: 120px;
+    }
+
+    .summary-container {
+        width: 90%;
+    }
+
+    .create-batch-button {
+        width: 90%;
+    }
+
+    .bottom-menu {
+        width: 100%;
+        padding: 0 50px;
+        left: 0;
+        transform: none;
+    }
+
+    .batch-items-list {
+        flex-direction: column;
+    }
+
+    .batch-item {
+        width: 100%;
+    }
+
+    /* Адаптивность для страницы распаковки */
+    .unpacking-progress-container,
+    .unpacking-progress-bar,
+    .scan-section,
+    .unpacking-search-container,
+    .boxes-container,
+    .box-card {
+        width: 90%;
+        left: 5%;
+    }
+
+    .boxes-container {
+        padding-top: 600px;
+    }
+
+    .box-icon,
+    .item-dot,
+    .batch-tag,
+    .unpacked-tag {
+        position: relative;
+        left: 0;
+        margin-bottom: 10px;
+    }
+
+    .box-title,
+    .box-room,
+    .box-items {
+        position: relative;
+        left: 0;
+        padding-left: 20px;
+    }
+
+    .box-id {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+    }
+
+    .check-icon,
+    .box-icon-inner {
+        left: 20px;
+        top: 20px;
+    }
+
+    /* Адаптивность для страницы задач */
+    .tabs-container {
+        width: 100%;
+        flex-direction: column;
+        height: auto;
+    }
+
+    .tab {
+        width: 100%;
+        height: 80px;
+    }
+
+    .tasks-content {
+        padding: 700px 40px 200px 40px;
+    }
+
+    .task-card {
+        width: 100%;
+        height: auto;
+        min-height: 160px;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .task-checkbox {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+
+    .task-delete {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+    }
+
+    .add-task-button {
+        left: auto;
+        right: 80px;
+    }
+
+    /* Адаптивность для страницы профиля */
+    .profile-page {
+        width: 100%;
+    }
+
+    .profile-top-section {
+        height: auto;
+        padding-bottom: 30px;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        padding: 40px 20px 0;
+        text-align: center;
+    }
+
+    .profile-avatar {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .app-help {
+        margin-left: 0;
+        margin-top: 20px;
+    }
+
+    .current-move-card {
+        position: relative;
+        width: 90%;
+        left: 5%;
+        height: auto;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 30px 20px;
+        margin-top: 30px;
+    }
+
+    .location-icon {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .profile-middle-section {
+        padding: 40px 20px;
+    }
+
+    .stats-cards {
+        flex-direction: column;
+        gap: 30px;
+        align-items: center;
+    }
+
+    .stat-item {
+        width: 90%;
+        height: auto;
+        padding: 40px 20px;
+    }
+
+    .history-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 30px 20px;
+    }
+
+    .history-icon {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .logout-section {
+        padding: 0 20px 40px;
+    }
+
+    .logout-button {
+        width: 90%;
+        left: 5%;
+        position: relative;
+    }
+
+    /* Адаптивность для страницы коробок */
+    .boxes-container {
+        padding-top: 80px;
+    }
+
+    .boxes-stats {
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .box-stat-card {
+        width: 80%;
+    }
+
+    .add-box-button {
+        position: relative;
+        left: auto;
+        right: auto;
+        margin: 20px auto;
+        top: auto;
+    }
+
+    .boxes-search-container {
+        width: 90%;
+        margin: 20px auto;
+    }
+
+    .boxes-list {
+        padding: 0 20px;
+    }
+
+    .box-card {
+        width: 100%;
+        height: auto;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .box-icon {
+        position: relative;
+        left: 0;
+        top: 0;
+        margin-bottom: 15px;
+    }
+
+    .box-title,
+    .box-room,
+    .box-items-list,
+    .box-items-count {
+        position: relative;
+        left: 0;
+        top: 0;
+        margin-bottom: 10px;
+    }
+
+    .show-qr-button {
+        position: relative;
+        width: 100%;
+        left: 0;
+        top: 0;
+        margin-top: 15px;
+    }
+
+    .box-status-tag {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+    }
+
+    /* Адаптивность для страницы сканера */
+    .scanner-container {
+        padding-top: 60px;
+        padding-bottom: 80px;
+    }
+
+    .scanner-header {
+        padding: 0 20px;
+        text-align: center;
+    }
+
+    .scanner-info-box {
+        width: 90%;
+        height: auto;
+        padding: 20px;
+        margin: 20px auto;
+    }
+
+    .scanner-info-text {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .scanner-preview {
+        width: 90%;
+        height: 400px;
+        margin: 20px auto;
+    }
+
+    .scanner-instruction {
+        width: 90%;
+        font-size: 32px;
+        line-height: 44px;
+        top: auto;
+        bottom: -60px;
+    }
+
+    .start-scan-button {
+        width: 90%;
+        height: 70px;
+    }
+
+    .start-scan-text {
+        font-size: 32px;
+        line-height: 44px;
+    }
+
+    /* Адаптивность для нижнего меню */
+    .bottom-menu {
+        height: 100px;
+        padding: 0 10px;
+    }
+
+    .menu-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
+    }
+
+    .menu-text {
+        font-size: 14px;
+        line-height: 19px;
+    }
+
+    /* Адаптивность для модального окна "Как работает приложение" */
+    .help-modal-content {
+        width: 95%;
+        max-height: 85vh;
+        padding: 20px;
+    }
+
+    .help-section {
+        padding-left: 0;
+        padding-top: 80px;
+        min-height: auto;
+    }
+
+    .help-section-number {
+        left: 50%;
+        transform: translateX(-50%);
+        top: 0;
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+
+    .help-section-content {
+        margin-left: 0;
+        padding: 20px;
+        border-radius: 30px;
+    }
+
+    .help-section-content h3 {
+        font-size: 24px;
+        line-height: 32px;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .help-section-content p {
+        font-size: 18px;
+        line-height: 24px;
+        text-align: center;
+    }
+
+    .help-instruction-box {
+        padding: 15px;
+        border-radius: 20px;
+    }
+
+    .help-instruction-box h4 {
+        font-size: 20px;
+        line-height: 28px;
+        text-align: center;
+    }
+
+    .help-instruction-box li {
+        font-size: 16px;
+        line-height: 22px;
+        padding-left: 20px;
+    }
+
+    /* Скрываем вертикальные линии на мобильных */
+    .help-section:not(:last-child):after {
+        display: none;
+    }
+
+    /* Адаптивность для модального окна "Завершить переезд" */
+    .finish-move-modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .finish-move-description {
+        font-size: 20px;
+        line-height: 28px;
+        margin-bottom: 30px;
+    }
+
+    .finish-move-buttons {
+        flex-direction: column;
+        padding: 0;
+        gap: 15px;
+    }
+
+    .finish-move-button {
+        width: 100%;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    /* Адаптивность для всех модальных окон */
+    .modal-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .modal-title {
+        font-size: 32px;
+        line-height: 40px;
+    }
+
+    .close-button {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+    }
+
+    .form-label {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .form-input,
+    .form-select {
+        height: 70px;
+        font-size: 24px;
+        padding: 0 20px;
+    }
+
+    .form-textarea {
+        height: 150px;
+        font-size: 24px;
+        padding: 20px;
+    }
+
+    .checkbox-label {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .submit-button {
+        height: 70px;
+        font-size: 32px;
+        line-height: 44px;
+    }
+}
+
+/* Дополнительные медиа-запросы для очень маленьких экранов */
+@media (max-width: 480px) {
+    .modal-content {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .modal-title {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .form-label {
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .form-input,
+    .form-select {
+        height: 50px;
+        font-size: 18px;
+    }
+
+    .form-textarea {
+        height: 100px;
+        font-size: 18px;
+    }
+
+    .checkbox-label {
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .submit-button {
+        height: 50px;
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .help-section-number {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .help-section-content h3 {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .help-section-content p {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .help-instruction-box h4 {
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .help-instruction-box li {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .finish-move-description {
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .finish-move-button {
+        height: 45px;
+        font-size: 18px;
+    }
+}
+
+/* Адаптивность для планшетов */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .modal-content {
+        width: 80%;
+    }
+
+    .help-section {
+        padding-left: 80px;
+    }
+
+    .help-section-number {
+        width: 70px;
+        height: 70px;
+        font-size: 28px;
+    }
+
+    .finish-move-modal-content {
+        width: 80%;
+    }
+}

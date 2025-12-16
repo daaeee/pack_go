@@ -1,139 +1,205 @@
-'use client';
+// app/components/InventoryPage.tsx
+"use client";
 
-import { useState } from 'react';
-import { InventoryItem, DeliveryBatch, FilterType } from "C:/Users/Пользователь/pack_go/app/types";
-import AddItemModal from './AddItemModal';
-import ItemCard from './ItemCard';
+import React from "react";
+import { InventoryItem } from "../types";
 
 interface InventoryPageProps {
   items: InventoryItem[];
-  batches: DeliveryBatch[];
-  onItemsChange: (items: InventoryItem[]) => void;
-  onBatchesChange: (batches: DeliveryBatch[]) => void;
+  stats: {
+    total: number;
+    packed: number;
+    fragile: number;
+  };
+  onAddItem: () => void;
+  onTogglePacked: (id: number) => void;
+  currentFilter: string;
+  onFilterChange: (filter: string) => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  getRoomName: (room: string) => string;
+  getCategoryName: (category: string) => string;
 }
 
-export default function InventoryPage({
+const InventoryPage: React.FC<InventoryPageProps> = ({
   items,
-  batches,
-  onItemsChange,
-  onBatchesChange,
-}: InventoryPageProps) {
-  const [currentFilter, setCurrentFilter] = useState<FilterType>('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showAddModal, setShowAddModal] = useState(false);
-
-  const filteredItems = items.filter(item => {
-    const matchesFilter = currentFilter === 'all' || item.category === currentFilter;
-    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         item.room.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
-
-  const totalCount = items.length;
-  const packedCount = items.filter(item => item.packed).length;
-  const fragileCount = items.filter(item => item.fragile).length;
-
-  const handleAddItem = (newItem: Omit<InventoryItem, 'id'>) => {
-    const itemWithId = {
-      ...newItem,
-      id: Date.now(),
-    };
-    onItemsChange([...items, itemWithId]);
-    setShowAddModal(false);
+  stats,
+  onAddItem,
+  onTogglePacked,
+  currentFilter,
+  onFilterChange,
+  searchQuery,
+  onSearchChange,
+  getRoomName,
+  getCategoryName,
+}) => {
+  const handleFilterClick = (value: string) => {
+    onFilterChange(value);
   };
 
-  const togglePackedStatus = (itemId: number) => {
-    const updatedItems = items.map(item =>
-      item.id === itemId ? { ...item, packed: !item.packed } : item
-    );
-    onItemsChange(updatedItems);
+  const handleSearchChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    onSearchChange(e.target.value);
   };
+
+  const hasItems = items.length > 0;
 
   return (
-    <div className="container">
-      {/* Верхняя белая секция */}
-      <div className="top-section">
-        <div className="header">
-          <h1>Инвентарь</h1>
-          <p id="itemsCount">{totalCount} предметов</p>
-        </div>
-        
-        <div className="stats">
-          <div className="stat-card total">
-            <h3>Всего</h3>
-            <div className="number" id="totalCount">{totalCount}</div>
+    <div className="page active" id="inventory-page">
+      <div className="container">
+        <div className="top-section">
+          <div className="header">
+            <h1>Инвентарь</h1>
+            <p>0 предметов</p>
           </div>
-          <div className="stat-card packed">
-            <h3>Упаковано</h3>
-            <div className="number" id="packedCount">{packedCount}</div>
-          </div>
-          <div className="stat-card fragile">
-            <h3>Хрупкое</h3>
-            <div className="number" id="fragileCount">{fragileCount}</div>
-          </div>
-        </div>
-        
-        <div className="add-button" onClick={() => setShowAddModal(true)}>
-          <span>Добавить</span>
-        </div>
-        
-        <div className="search-container">
-          <div className="search-icon"></div>
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Поиск по вещам или комнатам..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-        
-        <div className="filters">
-          {(['all', 'furniture', 'clothing', 'electronics', 'books', 'kitchen'] as FilterType[]).map(filter => (
-            <div
-              key={filter}
-              className={`filter ${currentFilter === filter ? 'active' : ''}`}
-              onClick={() => setCurrentFilter(filter)}
-            >
-              <span>
-                {filter === 'all' ? 'Все' :
-                 filter === 'furniture' ? 'Мебель' :
-                 filter === 'clothing' ? 'Одежда' :
-                 filter === 'electronics' ? 'Электроника' :
-                 filter === 'books' ? 'Книги' : 'Кухня'}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-      
-      {/* Нижняя оранжевая секция */}
-      <div className="bottom-section">
-        <div className="items-container" id="itemsContainer">
-          {filteredItems.length === 0 ? (
-            <div className="empty-state active">
-              {searchQuery ? 'Предмет не найден. Попробуйте другой запрос.' : 'Инвентарь пуст. Добавьте первый предмет!'}
-            </div>
-          ) : (
-            filteredItems.map(item => (
-              <ItemCard
-                key={item.id}
-                item={item}
-                batch={batches.find(b => b.id === item.batchId)}
-                onTogglePacked={() => togglePackedStatus(item.id)}
-              />
-            ))
-          )}
-        </div>
-      </div>
 
-      {showAddModal && (
-        <AddItemModal
-          batches={batches}
-          onClose={() => setShowAddModal(false)}
-          onAddItem={handleAddItem}
-        />
-      )}
+          <div className="stats">
+            <div className="stat-card total">
+              <h3>Всего предметов</h3>
+              <div className="number">{stats.total}</div>
+            </div>
+            <div className="stat-card packed">
+              <h3>Упаковано</h3>
+              <div className="number">{stats.packed}</div>
+            </div>
+            <div className="stat-card fragile">
+              <h3>Хрупкое</h3>
+              <div className="number">{stats.fragile}</div>
+            </div>
+          </div>
+
+          <div className="add-button" onClick={onAddItem}>
+            <span>Добавить</span>
+          </div>
+
+          <div className="search-container">
+            <div className="search-icon" />
+            <input
+              className="search-input"
+              type="text"
+              placeholder="Поиск по вещам или комнатам..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+          </div>
+
+          <div className="filters">
+            <div
+              className={
+                "filter" + (currentFilter === "all" ? " active" : "")
+              }
+              onClick={() => handleFilterClick("all")}
+            >
+              <span>Все</span>
+            </div>
+            <div
+              className={
+                "filter" +
+                (currentFilter === "furniture" ? " active" : "")
+              }
+              onClick={() => handleFilterClick("furniture")}
+            >
+              <span>Мебель</span>
+            </div>
+            <div
+              className={
+                "filter" +
+                (currentFilter === "electronics" ? " active" : "")
+              }
+              onClick={() => handleFilterClick("electronics")}
+            >
+              <span>Одежда</span>
+            </div>
+            <div
+              className={
+                "filter" +
+                (currentFilter === "clothing" ? " active" : "")
+              }
+              onClick={() => handleFilterClick("clothing")}
+            >
+              <span>Электроника</span>
+            </div>
+            <div
+              className={
+                "filter" +
+                (currentFilter === "books" ? " active" : "")
+              }
+              onClick={() => handleFilterClick("books")}
+            >
+              <span>Книги</span>
+            </div>
+            <div
+              className={
+                "filter" +
+                (currentFilter === "kitchen" ? " active" : "")
+              }
+              onClick={() => handleFilterClick("kitchen")}
+            >
+              <span>Кухня</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bottom-section">
+          <div className="items-container">
+            {!hasItems && (
+              <div className="empty-state active">
+                Инвентарь пуст. Добавьте первый предмет!
+              </div>
+            )}
+
+            {hasItems &&
+              items.map((item) => (
+                <div key={item.id} className="item-card">
+                  <div
+                    className={
+                      "item-icon " + (item.packed ? "green" : "gray")
+                    }
+                  />
+
+                  <div className="item-details">
+                    <div className="item-name">{item.name}</div>
+                    <div className="item-room">
+                      {getRoomName(item.room)} ·{" "}
+                      {getCategoryName(item.category)}
+                    </div>
+
+                    <div className="item-tags">
+                      <div
+                        className={
+                          "tag " +
+                          (item.packed
+                            ? "green packed-tag"
+                            : "white packed-tag")
+                        }
+                        onClick={() => onTogglePacked(item.id)}
+                      >
+                        {item.packed
+                          ? "Упаковано"
+                          : "Отметить как упакованное"}
+                      </div>
+
+                      <div className="tag gray">QR‑код</div>
+
+                      {item.fragile && (
+                        <div className="tag red">Хрупкое</div>
+                      )}
+                    </div>
+                  </div>
+
+                  {item.fragile && (
+                    <div className="fragile-indicator">
+                      Осторожно, хрупкое
+                    </div>
+                  )}
+                </div>
+              ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default InventoryPage;
