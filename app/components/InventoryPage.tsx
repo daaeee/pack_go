@@ -45,13 +45,25 @@ const InventoryPage: React.FC<InventoryPageProps> = ({
 
   const hasItems = items.length > 0;
 
+  // Функция склонения слова "предмет"
+  const getPluralForm = (number: number) => {
+    if (number % 10 === 1 && number % 100 !== 11) return "";
+    if (
+      [2, 3, 4].includes(number % 10) &&
+      ![12, 13, 14].includes(number % 100)
+    ) {
+      return "а";
+    }
+    return "ов";
+  };
+
   return (
     <div className="page active" id="inventory-page">
       <div className="container">
         <div className="top-section">
           <div className="header">
             <h1>Инвентарь</h1>
-            <p>0 предметов</p>
+            <p>{stats.total} предмет{getPluralForm(stats.total)}</p>
           </div>
 
           <div className="stats">

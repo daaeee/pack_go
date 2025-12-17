@@ -1,7 +1,8 @@
 // app/components/BoxesPage.tsx
+"use client";
 
-import React from 'react';
-import { Box } from '../types';
+import React from "react";
+import { Box } from "../types";
 
 interface BoxesPageProps {
   boxes: Box[];
@@ -32,106 +33,117 @@ const BoxesPage: React.FC<BoxesPageProps> = ({
   getBoxIconClass,
   onShowQRCode,
 }) => {
+  const hasBoxes = boxes.length > 0;
+
   return (
-    <div id="boxes-page" className="boxes-page">
-      <div className="boxes-container">
-        <div className="boxes-header">
-          <h1 className="boxes-title">Мои коробки</h1>
-          <p className="boxes-subtitle" id="boxesCount">
-            {stats.total} коробок создано
-          </p>
+    <div className="page active" id="boxes-page">
+      <div className="container">
+        <div className="top-section">
+          <div className="header">
+            <h1>Мои коробки</h1>
+            <p>{stats.total} коробок создано</p>
+          </div>
+
+          <div className="stats">
+            <div className="stat-card total">
+              <h3>Всего</h3>
+              <div className="number">{stats.total}</div>
+            </div>
+            <div className="stat-card packed">
+              <h3>Готовы</h3>
+              <div className="number">{stats.ready}</div>
+            </div>
+            <div className="stat-card fragile">
+              <h3>В работе</h3>
+              <div className="number">{stats.inWork}</div>
+            </div>
+          </div>
+
+                <div
+        className="add-button"
+        onClick={() => {
+          console.log("CLICK ADD BOX FROM BoxesPage");
+          onAddBox();
+        }}
+      >
+        <span>Добавить</span>
+      </div>
+
+
+          <div className="search-container">
+            <div className="search-icon" />
+            <input
+              className="search-input"
+              type="text"
+              placeholder="Поиск по коробкам или комнатам..."
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+            />
+          </div>
         </div>
 
-        <div className="boxes-stats">
-          <div className="box-stat-card total">
-            <h3>Всего</h3>
-            <div className="number" id="totalBoxes">
-              {stats.total}
-            </div>
-          </div>
-          <div className="box-stat-card ready">
-            <h3>Готовы</h3>
-            <div className="number" id="readyBoxes">
-              {stats.ready}
-            </div>
-          </div>
-          <div className="box-stat-card in-work">
-            <h3>В работе</h3>
-            <div className="number" id="inWorkBoxes">
-              {stats.inWork}
-            </div>
-          </div>
+        <div className="bottom-section">
+          <div className="items-container">
+            {!hasBoxes && (
+              <div className="empty-state active">
+                Коробок нет. Добавьте первую коробку!
+              </div>
+            )}
 
-          <div className="add-box-button" id="addBoxButton" onClick={onAddBox}>
-            <span>Добавить</span>
-          </div>
-        </div>
+            {hasBoxes &&
+              boxes.map((box) => {
+                const iconClass = getBoxIconClass(box.room);
+                const statusClass = getBoxStatusClass(box.status);
+                const statusName = getBoxStatusName(box.status);
+                const itemsCountText =
+                  box.status === "empty"
+                    ? "Пустая коробка"
+                    : `${box.itemsCount} предметов`;
+                const itemsCountClass =
+                  box.status === "empty"
+                    ? "box-items-count empty"
+                    : "box-items-count";
 
-        <div className="boxes-search-container">
-          <div className="search-icon" />
-          <input
-            type="text"
-            className="boxes-search-input"
-            id="boxesSearchInput"
-            placeholder="Поиск по названию или комнате"
-            value={searchQuery}
-            onChange={e => onSearchChange(e.target.value)}
-          />
-        </div>
+                return (
+                  <div key={box.id} className="box-card">
+                    <div className={`box-icon ${iconClass}`}>
+                      {box.icon}
+                    </div>
 
-        <div className="boxes-list" id="boxesList">
-          {boxes.length === 0 ? (
-            <div className="empty-state" id="boxesEmptyState">
-              Коробок нет. Добавьте первую коробку!
-            </div>
-          ) : (
-            boxes.map(box => {
-              const iconClass = getBoxIconClass(box.room);
-              const statusClass = getBoxStatusClass(box.status);
-              const statusName = getBoxStatusName(box.status);
+                    <div className="box-details">
+                      <div className="box-title">
+                        Коробка №{box.id} - {getRoomName(box.room)}
+                      </div>
+                      <div className="box-room">
+                        {getRoomName(box.room)}
+                      </div>
 
-              const itemsCountText =
-                box.status === 'empty'
-                  ? 'Пустая коробка'
-                  : `${box.itemsCount} предметов`;
+                      {box.description && (
+                        <div className="box-description">
+                          {box.description}
+                        </div>
+                      )}
 
-              const itemsCountClass =
-                box.status === 'empty' ? 'box-items-count empty' : 'box-items-count';
+                      <div className={itemsCountClass}>
+                        {itemsCountText}
+                      </div>
 
-              return (
-                <div className="box-card" key={box.id} data-box-id={box.id}>
-                  <div className={`box-icon ${iconClass}`}>
-                    <div className="box-icon-inner">{box.icon}</div>
+                      <div className="box-tags">
+                        <div
+                          className="tag gray"
+                          onClick={() => onShowQRCode(box.id)}
+                        >
+                          Показать QR-код
+                        </div>
+                        <div className={`tag ${statusClass}`}>
+                          {statusName}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-
-                  <h2 className="box-title">
-                    Коробка №{box.id} - {getRoomName(box.room)}
-                  </h2>
-
-                  <div className="box-room">{getRoomName(box.room)}</div>
-
-                  {box.description && (
-                    <div className="box-items-list">{box.description}</div>
-                  )}
-
-                  <div className={itemsCountClass}>{itemsCountText}</div>
-
-                  <div
-                    className="show-qr-button"
-                    data-box-id={box.id}
-                    onClick={() => onShowQRCode(box.id)}
-                  >
-                    <div className="qr-icon" />
-                    <span className="show-qr-text">Показать QR-код</span>
-                  </div>
-
-                  <div className={`box-status-tag ${statusClass}`}>
-                    <span className="status-text">{statusName}</span>
-                  </div>
-                </div>
-              );
-            })
-          )}
+                );
+              })}
+          </div>
         </div>
       </div>
     </div>

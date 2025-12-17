@@ -89,10 +89,28 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
 
   return (
     <div
-      className="modal-overlay"
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(160,160,160,0.5)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 999999,
+      }}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="modal-content">
+      <div
+        className="modal-content"
+        style={{
+          width: 1250,
+          maxWidth: "95%",
+          height: 800,
+          maxHeight: "95%",
+          boxSizing: "border-box",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
           <h2 className="modal-title">Добавить предмет</h2>
           <button className="close-button" onClick={onClose}>
@@ -102,21 +120,27 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">Название</label>
+            <label className="form-label" htmlFor="itemName">
+              Название
+            </label>
             <input
               className="form-input"
+              id="itemName"
               type="text"
               name="name"
-              placeholder="Введите название предмета"
+              placeholder="Например: Кофеварка"
               value={formData.name}
               onChange={handleChange}
             />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Комната</label>
+            <label className="form-label" htmlFor="itemRoom">
+              Комната
+            </label>
             <select
               className="form-select"
+              id="itemRoom"
               name="room"
               value={formData.room}
               onChange={handleChange}
@@ -131,9 +155,12 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
           </div>
 
           <div className="form-group">
-            <label className="form-label">Категория</label>
+            <label className="form-label" htmlFor="itemCategory">
+              Категория
+            </label>
             <select
               className="form-select"
+              id="itemCategory"
               name="category"
               value={formData.category}
               onChange={handleChange}
@@ -148,9 +175,12 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
           </div>
 
           <div className="form-group">
-            <label className="form-label">Партия доставки</label>
+            <label className="form-label" htmlFor="itemBatch">
+              Партия доставки
+            </label>
             <select
               className="form-select"
+              id="itemBatch"
               name="batchId"
               value={formData.batchId}
               onChange={handleChange}
@@ -170,7 +200,11 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
           </div>
 
           <div className="checkbox-group" onClick={toggleFragile}>
-            <div className="checkbox">
+            <div
+              className={
+                "checkbox" + (formData.fragile ? " checked" : "")
+              }
+            >
               {formData.fragile ? "✓" : ""}
             </div>
             <span className="checkbox-label">Хрупкий предмет</span>

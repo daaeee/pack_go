@@ -13,14 +13,14 @@ body {
 }
 
 .page {
-    display: none;
-    width: 100%;
-    min-height: 100vh;
+  width: 100%;
+  min-height: 100vh;
 }
 
+/* active больше не нужен 
 .active {
-    display: block;
-}
+}*/
+
 
 /* Стили для страницы инвентаря */
 .container {
