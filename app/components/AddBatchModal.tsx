@@ -74,82 +74,96 @@ const AddBatchModal: React.FC<AddBatchModalProps> = ({ onClose, onSubmit }) => {
 
   return (
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal">
-        <button className="modal-close-button" onClick={onClose}>
-          ×
-        </button>
+      <div className="modal-content" style={{ height: "900px", overflowY: "auto" }}>
+        <div className="modal-header">
+          <h2 className="modal-title">Создать новую партию</h2>
+          <button className="close-button" onClick={onClose}>
+            ×
+          </button>
+        </div>
 
-        <h2 className="modal-title">Создать новую партию</h2>
-
-        <form className="modal-form" onSubmit={handleSubmit}>
-          <label className="modal-label">
-            Название партии
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label className="form-label">
+              Название партии
+            </label>
             <input
               type="text"
               name="name"
-              className="modal-input"
+              className="form-input"
               value={formData.name}
+              onChange={handleChange}
+              placeholder="Введите название партии"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">
+              Дата доставки
+            </label>
+            <input
+              type="date"
+              name="date"
+              className="form-input"
+              value={formData.date}
               onChange={handleChange}
               required
             />
-          </label>
-
-          <div className="modal-row">
-            <label className="modal-label">
-              Дата доставки
-              <input
-                type="date"
-                name="date"
-                className="modal-input"
-                value={formData.date}
-                onChange={handleChange}
-                required
-              />
-            </label>
-
-            <label className="modal-label">
-              Время доставки
-              <input
-                type="time"
-                name="time"
-                className="modal-input"
-                value={formData.time}
-                onChange={handleChange}
-                required
-              />
-            </label>
           </div>
 
-          <label className="modal-label">
-            Адрес доставки
+          <div className="form-group">
+            <label className="form-label">
+              Время доставки
+            </label>
+            <input
+              type="time"
+              name="time"
+              className="form-input"
+              value={formData.time}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">
+              Адрес доставки
+            </label>
             <input
               type="text"
               name="address"
-              className="modal-input"
+              className="form-input"
               value={formData.address}
               onChange={handleChange}
+              placeholder="Введите адрес доставки"
               required
             />
-          </label>
+          </div>
 
-          <label className="modal-label">
-            Лимит вещей
+          <div className="form-group">
+            <label className="form-label">
+              Лимит вещей
+            </label>
             <input
               type="number"
               name="itemLimit"
-              className="modal-input"
+              className="form-input"
               value={formData.itemLimit}
               onChange={handleChange}
               min={1}
+              placeholder="Введите лимит вещей"
               required
             />
-          </label>
+          </div>
 
-          <label className="modal-label">
-            Приоритет
+          <div className="form-group">
+            <label className="form-label">
+              Приоритет
+            </label>
             <select
               name="priority"
-              className="modal-input"
+              className="form-select"
               value={formData.priority}
               onChange={handleChange}
               required
@@ -159,9 +173,9 @@ const AddBatchModal: React.FC<AddBatchModalProps> = ({ onClose, onSubmit }) => {
               <option value="medium">Средний</option>
               <option value="low">Можно подождать</option>
             </select>
-          </label>
+          </div>
 
-          <button type="submit" className="modal-submit-button">
+          <button type="submit" className="submit-button">
             Создать партию
           </button>
         </form>

@@ -61,29 +61,8 @@ const AddBoxModal: React.FC<AddBoxModalProps> = ({
   };
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(160,160,160,0.5)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 999999,
-      }}
-      onClick={(e) => e.target === e.currentTarget && onClose()}
-    >
-      <div
-        className="modal-content"
-        style={{
-          width: 1250,
-          maxWidth: "95%",
-          height: 800,
-          maxHeight: "95%",
-          boxSizing: "border-box",
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal-content" style={{ height: "900px", overflowY: "auto" }}>
         <div className="modal-header">
           <h2 className="modal-title">Добавить коробку</h2>
           <button className="close-button" onClick={onClose}>
@@ -104,6 +83,7 @@ const AddBoxModal: React.FC<AddBoxModalProps> = ({
               placeholder="Например: Кухонная утварь"
               value={formData.name}
               onChange={handleChange}
+              required
             />
           </div>
 
@@ -117,6 +97,7 @@ const AddBoxModal: React.FC<AddBoxModalProps> = ({
               name="room"
               value={formData.room}
               onChange={handleChange}
+              required
             >
               <option value="">Выберите комнату</option>
               <option value="kitchen">Кухня</option>
@@ -133,10 +114,9 @@ const AddBoxModal: React.FC<AddBoxModalProps> = ({
             </label>
             <textarea
               id="boxDescription"
-              className="form-input"
-              style={{ height: 150, paddingTop: 20, paddingBottom: 20 }}
+              className="form-textarea"
               name="description"
-              placeholder={"Перечислите основные предметы в коробке..."}
+              placeholder="Перечислите основные предметы в коробке..."
               value={formData.description}
               onChange={handleChange}
             />
@@ -152,6 +132,7 @@ const AddBoxModal: React.FC<AddBoxModalProps> = ({
               name="status"
               value={formData.status}
               onChange={handleChange}
+              required
             >
               <option value="">Выберите статус</option>
               <option value="empty">Пустая</option>
@@ -170,6 +151,7 @@ const AddBoxModal: React.FC<AddBoxModalProps> = ({
               name="batchId"
               value={formData.batchId}
               onChange={handleChange}
+              required
             >
               <option value="">Выберите партию</option>
               {batches.map((batch) => (
@@ -179,7 +161,9 @@ const AddBoxModal: React.FC<AddBoxModalProps> = ({
               ))}
             </select>
             {batches.length === 0 && (
-              <p style={{ marginTop: 10 }}>Сначала создайте партию доставки</p>
+              <p style={{ marginTop: 10, color: "#9F9F9F", fontSize: "24px" }}>
+                Сначала создайте партию доставки
+              </p>
             )}
           </div>
 

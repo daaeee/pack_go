@@ -60,7 +60,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ onClose, onSubmit }) => {
       id="taskModalOverlay"
       onClick={e => e.target === e.currentTarget && onClose()}
     >
-      <div className="modal-content">
+      <div className="modal-content" style={{ height: "800px", overflowY: "auto" }}>
         <div className="modal-header">
           <h2 className="modal-title">Добавить задачу</h2>
           <button
