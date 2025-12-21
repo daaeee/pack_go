@@ -1,183 +1,173 @@
-// app/components/AddBatchModal.tsx
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+import { PriorityType } from '../types';
 
 interface AddBatchModalProps {
+  isOpen: boolean;
   onClose: () => void;
-  onSubmit: (batch: {
+  onAddBatch: (batch: {
     name: string;
     date: string;
     time: string;
     address: string;
     itemLimit: number;
-    priority: "urgent" | "medium" | "low";
+    priority: PriorityType;
   }) => void;
 }
 
-const AddBatchModal: React.FC<AddBatchModalProps> = ({ onClose, onSubmit }) => {
+const AddBatchModal: React.FC<AddBatchModalProps> = ({
+  isOpen,
+  onClose,
+  onAddBatch,
+}) => {
   const [formData, setFormData] = useState({
-    name: "",
-    date: "",
-    time: "",
-    address: "",
-    itemLimit: "",
-    priority: "",
+    name: '',
+    date: '',
+    time: '',
+    address: '',
+    itemLimit: 24,
+    priority: 'medium' as PriorityType,
   });
 
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0];
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, "0");
-    const minutes = now.getMinutes().toString().padStart(2, "0");
+    if (isOpen) {
+      // Установить текущую дату и время по умолчанию
+      const today = new Date().toISOString().split('T')[0];
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      
+      setFormData(prev => ({
+        ...prev,
+        date: today,
+        time: `${hours}:${minutes}`,
+      }));
+    }
+  }, [isOpen]);
 
-    setFormData(prev => ({
-      ...prev,
-      date: today,
-      time: `${hours}:${minutes}`,
-    }));
-  }, []);
+  if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (
-      !formData.name ||
-      !formData.date ||
-      !formData.time ||
-      !formData.address ||
-      !formData.itemLimit ||
-      !formData.priority
-    ) {
-      alert("Пожалуйста, заполните все обязательные поля");
+    if (!formData.name || !formData.date || !formData.time || !formData.address || !formData.itemLimit) {
+      alert('Пожалуйста, заполните все обязательные поля');
       return;
     }
 
-    onSubmit({
-      name: formData.name,
-      date: formData.date,
-      time: formData.time,
-      address: formData.address,
-      itemLimit: parseInt(formData.itemLimit, 10),
-      priority: formData.priority as "urgent" | "medium" | "low",
+    onAddBatch(formData);
+    setFormData({
+      name: '',
+      date: '',
+      time: '',
+      address: '',
+      itemLimit: 24,
+      priority: 'medium',
     });
-
     onClose();
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: name === 'itemLimit' ? parseInt(value) || 0 : value }));
   };
 
   return (
-    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal-content" style={{ height: "900px", overflowY: "auto" }}>
+    <div className="modal-overlay" id="batchModalOverlay">
+      <div className="modal-content">
         <div className="modal-header">
           <h2 className="modal-title">Создать новую партию</h2>
-          <button className="close-button" onClick={onClose}>
-            ×
-          </button>
+          <button className="close-button" onClick={onClose}>×</button>
         </div>
-
+        
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">
-              Название партии
-            </label>
+            <label className="form-label" htmlFor="batchName">Название партии</label>
             <input
               type="text"
-              name="name"
               className="form-input"
+              id="batchName"
+              name="name"
+              placeholder="Например: Первоочередные вещи"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Введите название партии"
               required
             />
           </div>
-
+          
           <div className="form-group">
-            <label className="form-label">
-              Дата доставки
-            </label>
+            <label className="form-label" htmlFor="batchDate">Дата доставки</label>
             <input
               type="date"
-              name="date"
               className="form-input"
+              id="batchDate"
+              name="date"
               value={formData.date}
               onChange={handleChange}
               required
             />
           </div>
-
+          
           <div className="form-group">
-            <label className="form-label">
-              Время доставки
-            </label>
+            <label className="form-label" htmlFor="batchTime">Время доставки</label>
             <input
               type="time"
-              name="time"
               className="form-input"
+              id="batchTime"
+              name="time"
               value={formData.time}
               onChange={handleChange}
               required
             />
           </div>
-
+          
           <div className="form-group">
-            <label className="form-label">
-              Адрес доставки
-            </label>
+            <label className="form-label" htmlFor="batchAddress">Адрес доставки</label>
             <input
               type="text"
-              name="address"
               className="form-input"
+              id="batchAddress"
+              name="address"
+              placeholder="ул. Пушкина, д. 15, кв. 42"
               value={formData.address}
               onChange={handleChange}
-              placeholder="Введите адрес доставки"
               required
             />
           </div>
-
+          
           <div className="form-group">
-            <label className="form-label">
-              Лимит вещей
-            </label>
+            <label className="form-label" htmlFor="batchLimit">Лимит вещей</label>
             <input
               type="number"
-              name="itemLimit"
               className="form-input"
+              id="batchLimit"
+              name="itemLimit"
+              placeholder="Например: 24"
+              min="1"
               value={formData.itemLimit}
               onChange={handleChange}
-              min={1}
-              placeholder="Введите лимит вещей"
               required
             />
           </div>
-
+          
           <div className="form-group">
-            <label className="form-label">
-              Приоритет
-            </label>
+            <label className="form-label" htmlFor="batchPriority">Приоритет</label>
             <select
-              name="priority"
               className="form-select"
+              id="batchPriority"
+              name="priority"
               value={formData.priority}
               onChange={handleChange}
               required
             >
-              <option value="">Выберите приоритет</option>
+              <option value="" disabled>Выберите приоритет</option>
               <option value="urgent">Срочно</option>
               <option value="medium">Средний</option>
               <option value="low">Можно подождать</option>
             </select>
           </div>
-
-          <button type="submit" className="submit-button">
-            Создать партию
-          </button>
+          
+          <button type="submit" className="submit-button">Создать партию</button>
         </form>
       </div>
     </div>

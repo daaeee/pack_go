@@ -1,148 +1,172 @@
-// app/components/BoxesPage.tsx
-"use client";
+'use client';
 
-import React from "react";
-import { Box } from "../types";
+import React, { useState } from 'react';
+import { Box } from '../types';
 
 interface BoxesPageProps {
   boxes: Box[];
-  stats: {
-    total: number;
-    ready: number;
-    inWork: number;
-  };
   onAddBox: () => void;
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
-  getRoomName: (room: string) => string;
-  getBoxStatusName: (status: string) => string;
-  getBoxStatusClass: (status: string) => string;
-  getBoxIconClass: (room: string) => string;
-  onShowQRCode: (boxId: number) => void;
+  onShowQRCode: (box: Box) => void;
 }
 
 const BoxesPage: React.FC<BoxesPageProps> = ({
   boxes,
-  stats,
   onAddBox,
-  searchQuery,
-  onSearchChange,
-  getRoomName,
-  getBoxStatusName,
-  getBoxStatusClass,
-  getBoxIconClass,
   onShowQRCode,
 }) => {
-  const hasBoxes = boxes.length > 0;
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const getRoomName = (roomValue: string) => {
+    const roomNames: Record<string, string> = {
+      'living-room': 'Гостиная',
+      'kitchen': 'Кухня',
+      'bedroom': 'Спальня',
+      'office': 'Кабинет',
+      'bathroom': 'Ванная'
+    };
+    return roomNames[roomValue] || roomValue;
+  };
+
+  const getBoxStatusName = (statusValue: string) => {
+    const statusNames: Record<string, string> = {
+      'empty': 'Пустая',
+      'assembling': 'Комплектуется',
+      'ready': 'Готова'
+    };
+    return statusNames[statusValue] || statusValue;
+  };
+
+  const getBoxStatusClass = (statusValue: string) => {
+    const statusClasses: Record<string, string> = {
+      'empty': 'empty',
+      'assembling': 'assembling',
+      'ready': 'ready'
+    };
+    return statusClasses[statusValue] || 'empty';
+  };
+
+  const getBoxIconClass = (roomValue: string) => {
+    const iconClasses: Record<string, string> = {
+      'kitchen': 'orange',
+      'bedroom': 'orange',
+      'bathroom': 'blue',
+      'living-room': 'green',
+      'office': 'green'
+    };
+    return iconClasses[roomValue] || 'green';
+  };
+
+  const filteredBoxes = boxes.filter(box => {
+    if (!searchQuery) return true;
+    
+    const boxName = box.name.toLowerCase();
+    const roomName = getRoomName(box.room).toLowerCase();
+    return boxName.includes(searchQuery.toLowerCase()) || roomName.includes(searchQuery.toLowerCase());
+  });
+
+  const totalBoxes = boxes.length;
+  const readyBoxes = boxes.filter(box => box.status === 'ready').length;
+  const inWorkBoxes = boxes.filter(box => box.status === 'assembling').length;
+
+  const getPluralForm = (number: number, word: string) => {
+    if (number % 10 === 1 && number % 100 !== 11) {
+      return `${number} ${word}ка`;
+    } else if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) {
+      return `${number} ${word}ки`;
+    } else {
+      return `${number} ${word}ок`;
+    }
+  };
 
   return (
-    <div className="page active" id="boxes-page">
-      <div className="container">
-        <div className="top-section">
-          <div className="header">
-            <h1>Мои коробки</h1>
-            <p>{stats.total} коробок создано</p>
+    <div id="boxes-page" className="page">
+      <div className="boxes-container">
+        <div className="boxes-top-section">
+          <div className="boxes-header">
+            <h1 className="boxes-title">Мои коробки</h1>
+            <p className="boxes-subtitle" id="boxesCount">
+              {getPluralForm(totalBoxes, 'коробк')} создано
+            </p>
           </div>
-
-          <div className="stats">
-            <div className="stat-card total">
+          
+          <div className="boxes-stats">
+            <div className="box-stat-card total">
               <h3>Всего</h3>
-              <div className="number">{stats.total}</div>
+              <div className="number" id="totalBoxes">{totalBoxes}</div>
             </div>
-            <div className="stat-card packed">
+            <div className="box-stat-card ready">
               <h3>Готовы</h3>
-              <div className="number">{stats.ready}</div>
+              <div className="number" id="readyBoxes">{readyBoxes}</div>
             </div>
-            <div className="stat-card fragile">
+            <div className="box-stat-card in-work">
               <h3>В работе</h3>
-              <div className="number">{stats.inWork}</div>
+              <div className="number" id="inWorkBoxes">{inWorkBoxes}</div>
             </div>
           </div>
-
-                <div
-        className="add-button"
-        onClick={() => {
-          console.log("CLICK ADD BOX FROM BoxesPage");
-          onAddBox();
-        }}
-      >
-        <span>Добавить</span>
-      </div>
-
-
-          <div className="search-container">
-            <div className="search-icon" />
+          
+          <div className="add-box-button" id="addBoxButton" onClick={onAddBox}>
+            <span>Добавить</span>
+          </div>
+          
+          <div className="boxes-search-container">
+            <div className="search-icon">🔍</div>
             <input
-              className="search-input"
               type="text"
-              placeholder="Поиск по коробкам или комнатам..."
+              className="boxes-search-input"
+              id="boxesSearchInput"
+              placeholder="Поиск по коробкам..."
               value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
         </div>
-
-        <div className="bottom-section">
-          <div className="items-container">
-            {!hasBoxes && (
-              <div className="empty-state active">
+        
+        <div className="boxes-bottom-section">
+          <div className="boxes-list" id="boxesList">
+            {filteredBoxes.length === 0 ? (
+              <div className="empty-state" id="boxesEmptyState">
                 Коробок нет. Добавьте первую коробку!
               </div>
-            )}
-
-            {hasBoxes &&
-              boxes.map((box) => {
+            ) : (
+              filteredBoxes.map(box => {
                 const iconClass = getBoxIconClass(box.room);
-                const statusClass = getBoxStatusClass(box.status);
-                const statusName = getBoxStatusName(box.status);
-                const itemsCountText =
-                  box.status === "empty"
-                    ? "Пустая коробка"
-                    : `${box.itemsCount} предметов`;
-                const itemsCountClass =
-                  box.status === "empty"
-                    ? "box-items-count empty"
-                    : "box-items-count";
-
+                let itemsCountText = `${box.itemsCount} предметов`;
+                if (box.status === 'empty') {
+                  itemsCountText = 'Пустая коробка';
+                }
+                
+                const itemsCountClass = box.status === 'empty' ? 'empty' : '';
+                
                 return (
-                  <div key={box.id} className="box-card">
+                  <div key={box.id} className="box-card" data-box-id={box.id}>
                     <div className={`box-icon ${iconClass}`}>
-                      {box.icon}
+                      <div className="box-icon-inner">{box.icon}</div>
                     </div>
-
-                    <div className="box-details">
-                      <div className="box-title">
-                        Коробка №{box.id} - {getRoomName(box.room)}
-                      </div>
-                      <div className="box-room">
-                        {getRoomName(box.room)}
-                      </div>
-
-                      {box.description && (
-                        <div className="box-description">
-                          {box.description}
-                        </div>
-                      )}
-
-                      <div className={itemsCountClass}>
-                        {itemsCountText}
-                      </div>
-
-                      <div className="box-tags">
-                        <div
-                          className="tag gray"
-                          onClick={() => onShowQRCode(box.id)}
-                        >
-                          Показать QR-код
-                        </div>
-                        <div className={`tag ${statusClass}`}>
-                          {statusName}
-                        </div>
-                      </div>
+                    <h2 className="box-title">
+                      Коробка №{box.id} - {getRoomName(box.room)}
+                    </h2>
+                    <div className="box-room">{getRoomName(box.room)}</div>
+                    {box.description && (
+                      <div className="box-items-list">{box.description}</div>
+                    )}
+                    <div className={`box-items-count ${itemsCountClass}`}>
+                      {itemsCountText}
+                    </div>
+                    <div
+                      className="show-qr-button"
+                      data-box-id={box.id}
+                      onClick={() => onShowQRCode(box)}
+                    >
+                      <div className="qr-icon">📱</div>
+                      <span className="show-qr-text">Показать QR-код</span>
+                    </div>
+                    <div className={`box-status-tag ${getBoxStatusClass(box.status)}`}>
+                      <span className="status-text">{getBoxStatusName(box.status)}</span>
                     </div>
                   </div>
                 );
-              })}
+              })
+            )}
           </div>
         </div>
       </div>

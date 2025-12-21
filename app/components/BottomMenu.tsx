@@ -1,28 +1,27 @@
-// app/components/BottomMenu.tsx
+'use client';
 
 import React from 'react';
 
 interface BottomMenuProps {
-  currentPage: string;
+  activePage: string;
   onPageChange: (page: string) => void;
 }
 
-const menuItems = [
-  { id: 'inventory', label: 'Инвентарь', number: '1' },
-  { id: 'boxes', label: 'Коробки', number: '2' },
-  { id: 'scanner', label: 'Сканер', number: '3' },
-  { id: 'delivery', label: 'Партии', number: '4' },
-  { id: 'unpacking', label: 'Распаковка', number: '5' },
-  { id: 'tasks', label: 'Задачи', number: '6' },
-  { id: 'profile', label: 'Профиль', number: '7' },
-];
+const BottomMenu: React.FC<BottomMenuProps> = ({ activePage, onPageChange }) => {
+  const menuItems = [
+    { id: 'inventory', label: 'Инвентарь' },
+    { id: 'boxes', label: 'Коробки' },
+    { id: 'scanner', label: 'Сканер' },
+    { id: 'delivery', label: 'Партии' },
+    { id: 'unpacking', label: 'Распаковка' },
+    { id: 'tasks', label: 'Задачи' },
+    { id: 'profile', label: 'Профиль' },
+  ];
 
-const BottomMenu: React.FC<BottomMenuProps> = ({ currentPage, onPageChange }) => {
   return (
     <div className="bottom-menu">
-      {menuItems.map(item => {
-        const isActive = currentPage === item.id;
-
+      {menuItems.map((item) => {
+        const isActive = activePage === item.id;
         return (
           <div
             key={item.id}
@@ -32,9 +31,7 @@ const BottomMenu: React.FC<BottomMenuProps> = ({ currentPage, onPageChange }) =>
             <div
               id={`${item.id}-icon`}
               className={`menu-icon ${isActive ? 'active' : 'inactive'}`}
-            >
-              {item.number}
-            </div>
+            ></div>
             <div
               id={`${item.id}-text`}
               className={`menu-text ${isActive ? 'active' : 'inactive'}`}

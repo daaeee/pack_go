@@ -1,142 +1,128 @@
-// app/components/HelpModal.tsx
+'use client';
 
 import React from 'react';
 
 interface HelpModalProps {
+  isOpen: boolean;
   onClose: () => void;
 }
 
-const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
-  const helpSections = [
-    {
-      number: '1',
-      title: 'Инвентаризация',
-      description: 'Создайте цифровой список всех вещей, которые планируете перевезти.',
-      instructions: {
-        title: 'Что делать:',
-        items: [
-          'Сфотографируйте каждую вещь или коробку',
-          'Добавьте название и описание',
-          'Укажите комнату назначения',
-          'Отметьте хрупкость и ценность',
-          'Система автоматически сгенерирует QR-код',
-        ],
-      },
-    },
-    {
-      number: '2',
-      title: 'QR-коды',
-      description:
-        'Для каждой вещи или коробки автоматически генерируется уникальный QR-код.',
-      instructions: {
-        title: 'Что происходит с QR-кодами:',
-        items: [
-          'QR-код связан с цифровой карточкой предмета',
-          'Распечатайте коды через приложение',
-          'Наклейте их на коробки или прикрепите к вещам',
-        ],
-      },
-    },
-    {
-      number: '3',
-      title: 'Партии доставки',
-      description:
-        'Распределите вещи по партиям в зависимости от срочности и логистики.',
-      instructions: {
-        title: 'Что делать:',
-        items: [
-          'Создайте партии: "Кухня", "Мебель" и т.д.',
-          'Добавьте вещи из инвентаря в каждую партию',
-          'Укажите дату доставки',
-          'Установите приоритет (срочно/средний/можно подождать)',
-        ],
-      },
-    },
-    {
-      number: '4',
-      title: 'Упаковка',
-      description: 'Упаковывайте вещи и отмечайте процесс в приложении.',
-      instructions: {
-        title: 'Что происходит с вещами:',
-        items: [
-          'Упаковываете вещь/коробку',
-          'Наклеиваете QR-код',
-          'В приложении отмечаете "Упаковано"',
-          'Система обновляет процесс партии',
-          'Видите общий процесс переезда',
-        ],
-      },
-    },
-    {
-      number: '5',
-      title: 'Доставка',
-      description: 'Отслеживайте статус каждой партии в реальном времени.',
-      instructions: {
-        title: 'Статусы партий:',
-        items: [
-          'Планируется - ожидает отправки',
-          'В пути - на транспорте',
-          'Доставлено - прибыло на место',
-        ],
-      },
-    },
-    {
-      number: '6',
-      title: 'Распаковка с QR-сканированием',
-      description:
-        'QR-коды превращают хаотичную распаковку в организованный процесс.',
-      instructions: {
-        title: 'Как работает распаковка:',
-        items: [
-          'Коробка прибыла в новую квартиру',
-          'Сканируете QR-код на коробке',
-          'Приложение открывает карточку предмета',
-          'Видите всю информацию о содержимом',
-          'Знаете, куда нести коробку',
-          'Отмечаете "Распаковано"',
-        ],
-      },
-    },
-  ];
+const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
+  if (!isOpen) return null;
 
   return (
-    <div
-      className="modal-overlay"
-      id="helpModalOverlay"
-      onClick={e => e.target === e.currentTarget && onClose()}
-    >
+    <div className="modal-overlay" id="helpModalOverlay">
       <div className="modal-content help-modal-content">
         <div className="modal-header">
           <h2 className="modal-title">Руководство Pack&Go</h2>
-          <button
-            className="close-button"
-            id="closeHelpModal"
-            type="button"
-            onClick={onClose}
-          >
-            ×
-          </button>
+          <button className="close-button" onClick={onClose}>×</button>
         </div>
-
+        
         <div className="help-content">
           <div className="help-main-content">
-            {helpSections.map(section => (
-              <div className="help-section" key={section.number}>
-                <div className="help-section-number">{section.number}</div>
-                <div className="help-section-content">
-                  <h3>{section.title}</h3>
-                  <p>{section.description}</p>
-                  <div className="help-instruction-box">
-                    <h4>{section.instructions.title}</h4>
-                    <ul>
-                      {section.instructions.items.map((item, idx) => (
-                        <li key={idx}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
+            <div className="help-section">
+              <div className="help-section-number">1</div>
+              <div className="help-section-content">
+                <h3>Инвентаризация</h3>
+                <p>Создайте цифровой список всех вещей, которые планируете перевезти.</p>
+                <div className="help-instruction-box">
+                  <h4>Что делать:</h4>
+                  <ul>
+                    <li>Сфотографируйте каждую вещь или коробку</li>
+                    <li>Добавьте название и описание</li>
+                    <li>Укажите комнату назначения</li>
+                    <li>Отметьте хрупкость и ценность</li>
+                    <li>Система автоматически сгенерирует QR-код</li>
+                  </ul>
                 </div>
               </div>
-            ))}
+            </div>
+            
+            <div className="help-section">
+              <div className="help-section-number">2</div>
+              <div className="help-section-content">
+                <h3>QR-коды</h3>
+                <p>Для каждой вещи или коробки автоматически генерируется уникальный QR-код.</p>
+                <div className="help-instruction-box">
+                  <h4>Что происходит с QR-кодами:</h4>
+                  <ul>
+                    <li>QR-код связан с цифровой карточкой предмета</li>
+                    <li>Распечатайте коды через приложение</li>
+                    <li>Наклейте их на коробки или прикрепите к вещам</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div className="help-section">
+              <div className="help-section-number">3</div>
+              <div className="help-section-content">
+                <h3>Партии доставки</h3>
+                <p>Распределите вещи по партиям в зависимости от срочности и логистики.</p>
+                <div className="help-instruction-box">
+                  <h4>Что делать:</h4>
+                  <ul>
+                    <li>Создайте партии: &quot;Кухня&quot;, &quot;Мебель&quot; и т.д.</li>
+                    <li>Добавьте вещи из инвентаря в каждую партию</li>
+                    <li>Укажите дату доставки</li>
+                    <li>Установите приоритет (срочно/средний/можно подождать)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div className="help-section">
+              <div className="help-section-number">4</div>
+              <div className="help-section-content">
+                <h3>Упаковка</h3>
+                <p>Упаковывайте вещи и отмечайте процесс в приложении.</p>
+                <div className="help-instruction-box">
+                  <h4>Что происходит с вещами:</h4>
+                  <ul>
+                    <li>Упаковываете вещь/коробку</li>
+                    <li>Наклеиваете QR-код</li>
+                    <li>В приложении отмечаете &quot;Упаковано&quot;</li>
+                    <li>Система обновляет процесс партии</li>
+                    <li>Видите общий процесс переезда</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div className="help-section">
+              <div className="help-section-number">5</div>
+              <div className="help-section-content">
+                <h3>Доставка</h3>
+                <p>Отслеживайте статус каждой партии в реальном времени.</p>
+                <div className="help-instruction-box">
+                  <h4>Статусы партий:</h4>
+                  <ul>
+                    <li>Планируется - ожидает отправки</li>
+                    <li>В пути - на транспорте</li>
+                    <li>Доставлено - прибыло на место</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div className="help-section">
+              <div className="help-section-number">6</div>
+              <div className="help-section-content">
+                <h3>Распаковка с QR-сканированием</h3>
+                <p>QR-коды превращают хаотичную распаковку в организованный процесс.</p>
+                <div className="help-instruction-box">
+                  <h4>Как работает распаковка:</h4>
+                  <ul>
+                    <li>Коробка прибыла в новую квартиру</li>
+                    <li>Сканируете QR-код на коробке</li>
+                    <li>Приложение открывает карточку предмета</li>
+                    <li>Видите всю информацию о содержимом</li>
+                    <li>Знаете, куда нести коробку</li>
+                    <li>Отмечаете &quot;Распаковано&quot;</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

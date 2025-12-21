@@ -1,212 +1,187 @@
-// app/components/InventoryPage.tsx
-"use client";
+'use client';
 
-import React from "react";
-import { InventoryItem } from "../types";
+import React, { useState } from 'react';
+import ItemCard from './ItemCard';
+import { Item, Batch, FilterType } from '../types';
 
 interface InventoryPageProps {
-  items: InventoryItem[];
-  stats: {
-    total: number;
-    packed: number;
-    fragile: number;
-  };
+  items: Item[];
+  batches: Batch[];
+  onTogglePacked: (itemId: number) => void;
   onAddItem: () => void;
-  onTogglePacked: (id: number) => void;
-  currentFilter: string;
-  onFilterChange: (filter: string) => void;
+  onSearch: (query: string) => void;
+  onFilterChange: (filter: FilterType) => void;
+  currentFilter: FilterType;
   searchQuery: string;
-  onSearchChange: (query: string) => void;
-  getRoomName: (room: string) => string;
-  getCategoryName: (category: string) => string;
 }
 
 const InventoryPage: React.FC<InventoryPageProps> = ({
   items,
-  stats,
-  onAddItem,
+  batches,
   onTogglePacked,
-  currentFilter,
+  onAddItem,
+  onSearch,
   onFilterChange,
+  currentFilter,
   searchQuery,
-  onSearchChange,
-  getRoomName,
-  getCategoryName,
 }) => {
-  const handleFilterClick = (value: string) => {
-    onFilterChange(value);
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+
+  const getRoomName = (roomValue: string) => {
+    const roomNames: Record<string, string> = {
+      'living-room': 'Гостиная',
+      'kitchen': 'Кухня',
+      'bedroom': 'Спальня',
+      'office': 'Кабинет',
+      'bathroom': 'Ванная'
+    };
+    return roomNames[roomValue] || roomValue;
   };
 
-  const handleSearchChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    onSearchChange(e.target.value);
+  const getCategoryName = (categoryValue: string) => {
+    const categoryNames: Record<string, string> = {
+      'furniture': 'Мебель',
+      'electronics': 'Электроника',
+      'clothing': 'Одежда',
+      'books': 'Книги',
+      'kitchen': 'Кухонные принадлежности'
+    };
+    return categoryNames[categoryValue] || categoryValue;
   };
 
-  const hasItems = items.length > 0;
-
-  // Функция склонения слова "предмет"
-  const getPluralForm = (number: number) => {
-    if (number % 10 === 1 && number % 100 !== 11) return "";
-    if (
-      [2, 3, 4].includes(number % 10) &&
-      ![12, 13, 14].includes(number % 100)
-    ) {
-      return "а";
+  const getFilteredItems = () => {
+    let filtered = items;
+    
+    // Применяем фильтр по категории
+    if (currentFilter !== 'all') {
+      filtered = filtered.filter(item => item.category === currentFilter);
     }
-    return "ов";
+    
+    // Применяем поиск
+    if (localSearchQuery) {
+      filtered = filtered.filter(item => {
+        const itemName = item.name.toLowerCase();
+        const roomName = getRoomName(item.room).toLowerCase();
+        return itemName.includes(localSearchQuery.toLowerCase()) || roomName.includes(localSearchQuery.toLowerCase());
+      });
+    }
+    
+    return filtered;
   };
+
+  const getPluralForm = (number: number) => {
+    if (number % 10 === 1 && number % 100 !== 11) {
+      return '';
+    } else if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) {
+      return 'а';
+    } else {
+      return 'ов';
+    }
+  };
+
+  const totalItems = items.length;
+  const packedItems = items.filter(item => item.packed).length;
+  const fragileItems = items.filter(item => item.fragile).length;
+  const filteredItems = getFilteredItems();
+  const showNoResults = localSearchQuery && filteredItems.length === 0 && items.length > 0;
+  const showEmptyState = items.length === 0;
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalSearchQuery(value);
+    onSearch(value);
+  };
+
+  const filters = [
+    { value: 'all' as FilterType, label: 'Все' },
+    { value: 'furniture' as FilterType, label: 'Мебель' },
+    { value: 'clothing' as FilterType, label: 'Одежда' },
+    { value: 'electronics' as FilterType, label: 'Электроника' },
+    { value: 'books' as FilterType, label: 'Книги' },
+    { value: 'kitchen' as FilterType, label: 'Кухня' },
+  ];
 
   return (
-    <div className="page active" id="inventory-page">
+    <div id="inventory-page" className="page">
       <div className="container">
         <div className="top-section">
           <div className="header">
             <h1>Инвентарь</h1>
-            <p>{stats.total} предмет{getPluralForm(stats.total)}</p>
+            <p id="itemsCount">{totalItems} предмет{getPluralForm(totalItems)}</p>
           </div>
-
+          
           <div className="stats">
             <div className="stat-card total">
-              <h3>Всего предметов</h3>
-              <div className="number">{stats.total}</div>
+              <h3>Всего</h3>
+              <div className="number" id="totalCount">{totalItems}</div>
             </div>
             <div className="stat-card packed">
               <h3>Упаковано</h3>
-              <div className="number">{stats.packed}</div>
+              <div className="number" id="packedCount">{packedItems}</div>
             </div>
             <div className="stat-card fragile">
               <h3>Хрупкое</h3>
-              <div className="number">{stats.fragile}</div>
+              <div className="number" id="fragileCount">{fragileItems}</div>
             </div>
           </div>
-
-          <div className="add-button" onClick={onAddItem}>
+          
+          <div className="add-button" id="addButton" onClick={onAddItem}>
             <span>Добавить</span>
           </div>
-
+          
           <div className="search-container">
-            <div className="search-icon" />
+            <div className="search-icon">🔍</div>
             <input
-              className="search-input"
               type="text"
+              className="search-input"
+              id="searchInput"
               placeholder="Поиск по вещам или комнатам..."
-              value={searchQuery}
+              value={localSearchQuery}
               onChange={handleSearchChange}
             />
           </div>
-
+          
           <div className="filters">
-            <div
-              className={
-                "filter" + (currentFilter === "all" ? " active" : "")
-              }
-              onClick={() => handleFilterClick("all")}
-            >
-              <span>Все</span>
-            </div>
-            <div
-              className={
-                "filter" +
-                (currentFilter === "furniture" ? " active" : "")
-              }
-              onClick={() => handleFilterClick("furniture")}
-            >
-              <span>Мебель</span>
-            </div>
-            <div
-              className={
-                "filter" +
-                (currentFilter === "electronics" ? " active" : "")
-              }
-              onClick={() => handleFilterClick("electronics")}
-            >
-              <span>Одежда</span>
-            </div>
-            <div
-              className={
-                "filter" +
-                (currentFilter === "clothing" ? " active" : "")
-              }
-              onClick={() => handleFilterClick("clothing")}
-            >
-              <span>Электроника</span>
-            </div>
-            <div
-              className={
-                "filter" +
-                (currentFilter === "books" ? " active" : "")
-              }
-              onClick={() => handleFilterClick("books")}
-            >
-              <span>Книги</span>
-            </div>
-            <div
-              className={
-                "filter" +
-                (currentFilter === "kitchen" ? " active" : "")
-              }
-              onClick={() => handleFilterClick("kitchen")}
-            >
-              <span>Кухня</span>
-            </div>
+            {filters.map(filter => (
+              <div
+                key={filter.value}
+                className={`filter ${currentFilter === filter.value ? 'active' : ''}`}
+                data-filter={filter.value}
+                onClick={() => onFilterChange(filter.value)}
+              >
+                <span>{filter.label}</span>
+              </div>
+            ))}
           </div>
         </div>
-
+        
         <div className="bottom-section">
-          <div className="items-container">
-            {!hasItems && (
-              <div className="empty-state active">
+          <div className="items-container" id="itemsContainer">
+            {showEmptyState && (
+              <div className="empty-state active" id="emptyState">
                 Инвентарь пуст. Добавьте первый предмет!
               </div>
             )}
-
-            {hasItems &&
-              items.map((item) => (
-                <div key={item.id} className="item-card">
-                  <div
-                    className={
-                      "item-icon " + (item.packed ? "green" : "gray")
-                    }
-                  />
-
-                  <div className="item-details">
-                    <div className="item-name">{item.name}</div>
-                    <div className="item-room">
-                      {getRoomName(item.room)} ·{" "}
-                      {getCategoryName(item.category)}
-                    </div>
-
-                    <div className="item-tags">
-                      <div
-                        className={
-                          "tag " +
-                          (item.packed
-                            ? "green packed-tag"
-                            : "white packed-tag")
-                        }
-                        onClick={() => onTogglePacked(item.id)}
-                      >
-                        {item.packed
-                          ? "Упаковано"
-                          : "Отметить как упакованное"}
-                      </div>
-
-                      <div className="tag gray">QR‑код</div>
-
-                      {item.fragile && (
-                        <div className="tag red">Хрупкое</div>
-                      )}
-                    </div>
-                  </div>
-
-                  {item.fragile && (
-                    <div className="fragile-indicator">
-                      Осторожно, хрупкое
-                    </div>
-                  )}
-                </div>
-              ))}
+            
+            {showNoResults && (
+              <div className="search-no-results active" id="searchNoResults">
+                Предмет не найден. Попробуйте другой запрос.
+              </div>
+            )}
+            
+            {!showEmptyState && !showNoResults && filteredItems.map(item => {
+              const batch = batches.find(b => b.id === item.batchId);
+              const batchName = batch ? batch.name : 'Не назначена';
+              
+              return (
+                <ItemCard
+                  key={item.id}
+                  item={item}
+                  batchName={batchName}
+                  onTogglePacked={onTogglePacked}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
