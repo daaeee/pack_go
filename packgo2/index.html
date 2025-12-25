@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система управления переездом</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="src/css/main.css">
+    <link rel="stylesheet" href="src/css/media.css">
+</head>
+<body>
+    <!-- Страница инвентаря -->
+    <div id="inventory-page" class="page active">
+        <div class="container">
+            <!-- Верхняя белая секция -->
+            <div class="top-section">
+                <div class="header">
+                    <h1>Инвентарь</h1>
+                    <p id="itemsCount">0 предметов</p>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-card total">
+                        <h3>Всего</h3>
+                        <div class="number" id="totalCount">0</div>
+                    </div>
+                    <div class="stat-card packed">
+                        <h3>Упаковано</h3>
+                        <div class="number" id="packedCount">0</div>
+                    </div>
+                    <div class="stat-card fragile">
+                        <h3>Хрупкое</h3>
+                        <div class="number" id="fragileCount">0</div>
+                    </div>
+                </div>
+                
+                <div class="add-button" id="addButton">
+                    <span>Добавить</span>
+                </div>
+                
+                <div class="search-container">
+                    <div class="search-icon">🔍</div>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Поиск по вещам или комнатам...">
+                </div>
+                
+                <div class="filters">
+                    <div class="filter active" data-filter="all">
+                        <span>Все</span>
+                    </div>
+                    <div class="filter" data-filter="furniture">
+                        <span>Мебель</span>
+                    </div>
+                    <div class="filter" data-filter="clothing">
+                        <span>Одежда</span>
+                    </div>
+                    <div class="filter" data-filter="electronics">
+                        <span>Электроника</span>
+                    </div>
+                    <div class="filter" data-filter="books">
+                        <span>Книги</span>
+                    </div>
+                    <div class="filter" data-filter="kitchen">
+                        <span>Кухня</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Нижняя оранжевая секция -->
+            <div class="bottom-section">
+                <div class="items-container" id="itemsContainer">
+                    <div class="empty-state active" id="emptyState">
+                        Инвентарь пуст. Добавьте первый предмет!
+                    </div>
+                    <div class="search-no-results" id="searchNoResults">
+                        Предмет не найден. Попробуйте другой запрос.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница коробок -->
+    <div id="boxes-page" class="page">
+        <div class="boxes-container">
+            <!-- Верхняя белая секция -->
+            <div class="boxes-top-section">
+                <div class="boxes-header">
+                    <h1 class="boxes-title">Мои коробки</h1>
+                    <p class="boxes-subtitle" id="boxesCount">0 коробок создано</p>
+                </div>
+                
+                <div class="boxes-stats">
+                    <div class="box-stat-card total">
+                        <h3>Всего</h3>
+                        <div class="number" id="totalBoxes">0</div>
+                    </div>
+                    <div class="box-stat-card ready">
+                        <h3>Готовы</h3>
+                        <div class="number" id="readyBoxes">0</div>
+                    </div>
+                    <div class="box-stat-card in-work">
+                        <h3>В работе</h3>
+                        <div class="number" id="inWorkBoxes">0</div>
+                    </div>
+                </div>
+                
+                <div class="add-box-button" id="addBoxButton">
+                    <span>Добавить</span>
+                </div>
+                
+                <div class="boxes-search-container">
+                    <div class="search-icon">🔍</div>
+                    <input type="text" class="boxes-search-input" id="boxesSearchInput" placeholder="Поиск по коробкам...">
+                </div>
+            </div>
+            
+            <!-- Нижняя оранжевая секция -->
+            <div class="boxes-bottom-section">
+                <div class="boxes-list" id="boxesList">
+                    <div class="empty-state" id="boxesEmptyState">
+                        Коробок нет. Добавьте первую коробку!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница сканера -->
+    <div id="scanner-page" class="page">
+        <div class="scanner-container">
+            <div class="scanner-header">
+                <h1 class="scanner-title">Сканер QR-кодов</h1>
+                <p class="scanner-subtitle">Отсканируйте коробку для просмотра содержимого</p>
+            </div>
+            
+            <div class="scanner-info-box">
+                <p class="scanner-info-text">
+                    Наведите камеру на QR-код коробки для быстрого доступа к информации о содержимом коробки.
+                </p>
+            </div>
+            
+            <div class="scanner-preview">
+                <div class="scanner-frame">
+                    <div class="scanner-overlay">
+                        <div class="scanner-line"></div>
+                    </div>
+                </div>
+                <div class="scanner-instruction">Наведите камеру на QR-код</div>
+            </div>
+            
+            <div class="start-scan-button" id="startScanButton">
+                <div class="start-scan-text">Начать сканирование</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница партий доставки -->
+    <div id="delivery-page" class="page">
+        <div class="batch-header">
+            <div class="batch-header-title">Партии доставки</div>
+            <div class="batch-header-subtitle" id="batchesCount">Запланировано 0 партий</div>
+        </div>
+        
+        <div class="batch-container" id="batchesContainer">
+            <div class="empty-state active" id="batchesEmptyState">
+                Партии доставки отсутствуют. Создайте первую партию!
+            </div>
+        </div>
+        
+        <div class="summary-section">
+            <div class="summary-container">
+                <div class="summary-title">Сводка по партиям</div>
+                
+                <div class="summary-item">
+                    <div class="summary-indicator indicator-delivered"></div>
+                    <div class="summary-label">Доставлено</div>
+                    <div class="summary-count" id="deliveredCount">0 партий</div>
+                </div>
+                
+                <div class="summary-item">
+                    <div class="summary-indicator indicator-in-transit"></div>
+                    <div class="summary-label">В пути</div>
+                    <div class="summary-count" id="inTransitCount">0 партий</div>
+                </div>
+                
+                <div class="summary-item">
+                    <div class="summary-indicator indicator-planned"></div>
+                    <div class="summary-label">Планируется</div>
+                    <div class="summary-count" id="plannedCount">0 партий</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="create-batch-button" id="createBatchButton">
+            <div class="create-batch-text">Создать новую партию</div>
+        </div>
+    </div>
+
+    <!-- Страница распаковки -->
+    <div id="unpacking-page" class="page unpacking-page">
+        <div class="unpacking-header">
+            <h1 class="unpacking-title">Распаковка</h1>
+            <div class="unpacking-subtitle">0 из 0 коробок распаковано</div>
+            <div class="unpacking-progress-text">0% выполнено</div>
+            
+            <div class="unpacking-progress-container"></div>
+            <div class="unpacking-progress-bar"></div>
+            
+            <div class="scan-section">
+                <span class="scan-text">Сканировать QR-код</span>
+            </div>
+            
+            <div class="unpacking-search-container">
+                <div class="search-icon">🔍</div>
+                <input type="text" class="unpacking-search-input" placeholder="Поиск по вещам или комнатам...">
+            </div>
+        </div>
+        
+        <div class="boxes-container" id="unpackingBoxesContainer">
+            <div class="empty-state" id="unpackingEmptyState">
+                Нет коробок для распаковки
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница задач -->
+    <div id="tasks-page" class="page">
+        <div class="tasks-page">
+            <div class="tasks-header">
+                <h1 class="tasks-title">Задачи</h1>
+                <div class="tasks-subtitle" id="tasksSummary">0 из 0 выполнена</div>
+                
+                <div class="stats-container">
+                    <div class="tasks-stat-card total">
+                        <h3>Всего</h3>
+                        <div class="number" id="totalTasks">0</div>
+                    </div>
+                    <div class="tasks-stat-card completed">
+                        <h3>Выполнено</h3>
+                        <div class="number" id="completedTasks">0</div>
+                    </div>
+                    <div class="tasks-stat-card remaining">
+                        <h3>Осталось</h3>
+                        <div class="number" id="remainingTasks">0</div>
+                    </div>
+                </div>
+                
+                <div class="add-task-button" id="addTaskButton">
+                    <span>Добавить</span>
+                </div>
+                
+                <div class="tabs-container">
+                    <div class="tab active" data-filter="all">Все</div>
+                    <div class="tab inactive" data-filter="active">Активные</div>
+                    <div class="tab inactive" data-filter="completed">Завершенные</div>
+                </div>
+            </div>
+            
+            <div class="tasks-content" id="tasksContent">
+                <div class="section" id="before-moving-section">
+                    <div class="section-header">
+                        <div class="section-indicator before"></div>
+                        <h2 class="section-title">До переезда</h2>
+                    </div>
+                    <div class="tasks-list" id="before-moving-tasks">
+                        <div class="empty-section">
+                            Нет задач в этом разделе. Добавьте первую задачу!
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section" id="during-moving-section">
+                    <div class="section-header">
+                        <div class="section-indicator during"></div>
+                        <h2 class="section-title">Во время переезда</h2>
+                    </div>
+                    <div class="tasks-list" id="during-moving-tasks">
+                        <div class="empty-section">
+                            Нет задач в этом разделе. Добавьте первую задачу!
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section" id="after-moving-section">
+                    <div class="section-header">
+                        <div class="section-indicator after"></div>
+                        <h2 class="section-title">После переезда</h2>
+                    </div>
+                    <div class="tasks-list" id="after-moving-tasks">
+                        <div class="empty-section">
+                            Нет задач в этом разделе. Добавьте первую задачу!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница профиля -->
+    <div id="profile-page" class="page">
+        <div class="profile-page">
+            <div class="profile-top-section">
+                <div class="profile-header">
+                    <div class="profile-avatar">ИИ</div>
+                    <div class="profile-info">
+                        <h1 id="profile-name">Фамилия Имя</h1>
+                        <p id="profile-email">name@example.com</p>
+                    </div>
+                    <div class="app-help">
+                        <span class="help-text" id="showHelpButton">Как работает приложение?</span>
+                    </div>
+                </div>
+
+                <div class="current-move-card">
+                    <div class="location-icon">📍</div>
+                    <div class="current-move-content">
+                        <div class="current-move-label">Текущий переезд</div>
+                        <div class="current-move-address" id="current-address">Не указан</div>
+                        <div class="calendar-icon">📅</div>
+                        <div class="move-start-date" id="move-start-date">Начат: --</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-middle-section">
+                <div class="stats-section">
+                    <h2 class="section-title">Статистика переезда</h2>
+                    
+                    <div class="stats-cards">
+                        <div class="stat-item total-items">
+                            <div class="stat-icon">📦</div>
+                            <div class="stat-number" id="profile-total-items">0</div>
+                            <div class="stat-label">Всего вещей</div>
+                        </div>
+                        
+                        <div class="stat-item total-batches">
+                            <div class="stat-icon">🚚</div>
+                            <div class="stat-number" id="profile-total-batches">0</div>
+                            <div class="stat-label">Партии</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-section">
+                    <h2 class="section-title">История переездов</h2>
+                    
+                    <div class="history-card" id="history-item" style="display: none;">
+                        <div class="history-icon">📍</div>
+                        <div class="history-content">
+                            <div class="history-address" id="history-address"></div>
+                            <div class="history-date" id="history-date"></div>
+                            <div class="history-stats" id="history-stats"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="history-empty" id="history-empty">
+                        У вас пока нет завершенных переездов
+                    </div>
+                </div>
+            </div>
+
+            <div class="logout-section">
+                <div class="logout-button" id="logoutButton">
+                    <div class="logout-icon">🚪</div>
+                    <div class="logout-text">Выйти из аккаунта</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления предмета -->
+    <div class="modal-overlay" id="itemModalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Добавить предмет</h2>
+                <button class="close-button" id="closeItemModal">×</button>
+            </div>
+            
+            <form id="addItemForm">
+                <div class="form-group">
+                    <label class="form-label" for="itemName">Название</label>
+                    <input type="text" class="form-input" id="itemName" placeholder="Например: Кофеварка" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="itemRoom">Комната</label>
+                    <select class="form-select" id="itemRoom" required>
+                        <option value="" disabled selected>Выберите комнату</option>
+                        <option value="living-room">Гостиная</option>
+                        <option value="kitchen">Кухня</option>
+                        <option value="bedroom">Спальня</option>
+                        <option value="office">Кабинет</option>
+                        <option value="bathroom">Ванная</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="itemCategory">Категория</label>
+                    <select class="form-select" id="itemCategory" required>
+                        <option value="" disabled selected>Выберите категорию</option>
+                        <option value="furniture">Мебель</option>
+                        <option value="electronics">Электроника</option>
+                        <option value="clothing">Одежда</option>
+                        <option value="books">Книги</option>
+                        <option value="kitchen">Кухонные принадлежности</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="itemBatch">Партия доставки</label>
+                    <select class="form-select" id="itemBatch" required>
+                        <option value="" disabled selected>Выберите партию</option>
+                    </select>
+                </div>
+                
+                <div class="checkbox-group">
+                    <div class="checkbox" id="fragileCheckbox"></div>
+                    <span class="checkbox-label">Хрупкий предмет</span>
+                </div>
+                
+                <button type="submit" class="submit-button">Добавить в инвентарь</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно создания партии -->
+    <div class="modal-overlay" id="batchModalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Создать новую партию</h2>
+                <button class="close-button" id="closeBatchModal">×</button>
+            </div>
+            
+            <form id="addBatchForm">
+                <div class="form-group">
+                    <label class="form-label" for="batchName">Название партии</label>
+                    <input type="text" class="form-input" id="batchName" placeholder="Например: Первоочередные вещи" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="batchDate">Дата доставки</label>
+                    <input type="date" class="form-input" id="batchDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="batchTime">Время доставки</label>
+                    <input type="time" class="form-input" id="batchTime" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="batchAddress">Адрес доставки</label>
+                    <input type="text" class="form-input" id="batchAddress" placeholder="ул. Пушкина, д. 15, кв. 42" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="batchLimit">Лимит вещей</label>
+                    <input type="number" class="form-input" id="batchLimit" placeholder="Например: 24" min="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="batchPriority">Приоритет</label>
+                    <select class="form-select" id="batchPriority" required>
+                        <option value="" disabled selected>Выберите приоритет</option>
+                        <option value="urgent">Срочно</option>
+                        <option value="medium">Средний</option>
+                        <option value="low">Можно подождать</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="submit-button">Создать партию</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления задачи -->
+    <div class="modal-overlay" id="taskModalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Добавить задачу</h2>
+                <button class="close-button" id="closeTaskModal">×</button>
+            </div>
+            
+            <form id="addTaskForm">
+                <div class="form-group">
+                    <label class="form-label" for="taskTitle">Название задачи</label>
+                    <input type="text" class="form-input" id="taskTitle" placeholder="Например: Упаковать посуду" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="taskDescription">Описание</label>
+                    <textarea class="form-textarea" id="taskDescription" placeholder="Дополнительные детали..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="taskSection">Раздел</label>
+                    <select class="form-select" id="taskSection" required>
+                        <option value="" disabled selected>Выберите раздел</option>
+                        <option value="before">До переезда</option>
+                        <option value="during">Во время переезда</option>
+                        <option value="after">После переезда</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="taskDate">Дата выполнения</label>
+                    <input type="date" class="form-input" id="taskDate" required>
+                </div>
+                
+                <button type="submit" class="submit-button">Добавить задачу</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления коробки -->
+    <div class="modal-overlay" id="boxModalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Добавить коробку</h2>
+                <button class="close-button" id="closeBoxModal">×</button>
+            </div>
+            
+            <form id="addBoxForm">
+                <div class="form-group">
+                    <label class="form-label" for="boxName">Название коробки</label>
+                    <input type="text" class="form-input" id="boxName" placeholder="Например: Кухонная посуда" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="boxRoom">Комната</label>
+                    <select class="form-select" id="boxRoom" required>
+                        <option value="" disabled selected>Выберите комнату</option>
+                        <option value="kitchen">Кухня</option>
+                        <option value="living-room">Гостиная</option>
+                        <option value="bedroom">Спальня</option>
+                        <option value="office">Кабинет</option>
+                        <option value="bathroom">Ванная</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="boxDescription">Описание содержимого</label>
+                    <textarea class="form-textarea" id="boxDescription" placeholder="Перечислите основные предметы в коробке..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="boxStatus">Статус</label>
+                    <select class="form-select" id="boxStatus" required>
+                        <option value="" disabled selected>Выберите статус</option>
+                        <option value="empty">Пустая</option>
+                        <option value="assembling">Комплектуется</option>
+                        <option value="ready">Готова</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="boxBatch">Партия доставки</label>
+                    <select class="form-select" id="boxBatch" required>
+                        <option value="" disabled selected>Выберите партию</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="submit-button">Добавить коробку</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно "Как работает приложение" -->
+    <div class="modal-overlay" id="helpModalOverlay">
+        <div class="modal-content help-modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Руководство Pack&Go</h2>
+                <button class="close-button" id="closeHelpModal">×</button>
+            </div>
+            
+            <div class="help-content">
+                <div class="help-main-content">
+                    <div class="help-section">
+                        <div class="help-section-number">1</div>
+                        <div class="help-section-content">
+                            <h3>Инвентаризация</h3>
+                            <p>Создайте цифровой список всех вещей, которые планируете перевезти.</p>
+                            <div class="help-instruction-box">
+                                <h4>Что делать:</h4>
+                                <ul>
+                                    <li>Сфотографируйте каждую вещь или коробку</li>
+                                    <li>Добавьте название и описание</li>
+                                    <li>Укажите комнату назначения</li>
+                                    <li>Отметьте хрупкость и ценность</li>
+                                    <li>Система автоматически сгенерирует QR-код</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="help-section">
+                        <div class="help-section-number">2</div>
+                        <div class="help-section-content">
+                            <h3>QR-коды</h3>
+                            <p>Для каждой вещи или коробки автоматически генерируется уникальный QR-код.</p>
+                            <div class="help-instruction-box">
+                                <h4>Что происходит с QR-кодами:</h4>
+                                <ul>
+                                    <li>QR-код связан с цифровой карточкой предмета</li>
+                                    <li>Распечатайте коды через приложение</li>
+                                    <li>Наклейте их на коробки или прикрепите к вещам</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="help-section">
+                        <div class="help-section-number">3</div>
+                        <div class="help-section-content">
+                            <h3>Партии доставки</h3>
+                            <p>Распределите вещи по партиям в зависимости от срочности и логистики.</p>
+                            <div class="help-instruction-box">
+                                <h4>Что делать:</h4>
+                                <ul>
+                                    <li>Создайте партии: "Кухня", "Мебель" и т.д.</li>
+                                    <li>Добавьте вещи из инвентаря в каждую партию</li>
+                                    <li>Укажите дату доставки</li>
+                                    <li>Установите приоритет (срочно/средний/можно подождать)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="help-section">
+                        <div class="help-section-number">4</div>
+                        <div class="help-section-content">
+                            <h3>Упаковка</h3>
+                            <p>Упаковывайте вещи и отмечайте процесс в приложении.</p>
+                            <div class="help-instruction-box">
+                                <h4>Что происходит с вещами:</h4>
+                                <ul>
+                                    <li>Упаковываете вещь/коробку</li>
+                                    <li>Наклеиваете QR-код</li>
+                                    <li>В приложении отмечаете "Упаковано"</li>
+                                    <li>Система обновляет процесс партии</li>
+                                    <li>Видите общий процесс переезда</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="help-section">
+                        <div class="help-section-number">5</div>
+                        <div class="help-section-content">
+                            <h3>Доставка</h3>
+                            <p>Отслеживайте статус каждой партии в реальном времени.</p>
+                            <div class="help-instruction-box">
+                                <h4>Статусы партий:</h4>
+                                <ul>
+                                    <li>Планируется - ожидает отправки</li>
+                                    <li>В пути - на транспорте</li>
+                                    <li>Доставлено - прибыло на место</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="help-section">
+                        <div class="help-section-number">6</div>
+                        <div class="help-section-content">
+                            <h3>Распаковка с QR-сканированием</h3>
+                            <p>QR-коды превращают хаотичную распаковку в организованный процесс.</p>
+                            <div class="help-instruction-box">
+                                <h4>Как работает распаковка:</h4>
+                                <ul>
+                                    <li>Коробка прибыла в новую квартиру</li>
+                                    <li>Сканируете QR-код на коробке</li>
+                                    <li>Приложение открывает карточку предмета</li>
+                                    <li>Видите всю информацию о содержимом</li>
+                                    <li>Знаете, куда нести коробку</li>
+                                    <li>Отмечаете "Распаковано"</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно "Завершить переезд" -->
+    <div class="modal-overlay" id="finishMoveModalOverlay">
+        <div class="modal-content finish-move-modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Завершить переезд?</h2>
+                <button class="close-button" id="closeFinishMoveModal">×</button>
+            </div>
+            
+            <div class="finish-move-content">
+                <p class="finish-move-description">
+                    Все партии доставлены. Завершить переезд? Он переместится в историю, и вы сможете начать новый переезд.
+                </p>
+                
+                <div class="finish-move-buttons">
+                    <button class="finish-move-button cancel-button" id="cancelFinishMove">Отмена</button>
+                    <button class="finish-move-button confirm-button" id="confirmFinishMove">Завершить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно QR-кода коробки -->
+    <div class="modal-overlay" id="qrCodeModalOverlay">
+        <div class="modal-content qr-code-modal-content">
+            <div class="qr-code-container">
+                <div class="qr-code-title">QR-код коробки</div>
+                
+                <div class="qr-code-box">
+                    <div class="qr-code-placeholder" id="qrCodePlaceholder">
+                        <!-- QR-код будет здесь -->
+                    </div>
+                </div>
+                
+                <div class="qr-code-number" id="qrCodeNumber">BOX001</div>
+                
+                <div class="qr-code-info-box">
+                    <div class="qr-code-room-label" id="qrCodeRoomLabel">Кухня</div>
+                    <div class="qr-code-box-title" id="qrCodeBoxTitle">Коробка №1 - Кухня</div>
+                    <div class="qr-code-content" id="qrCodeContent">Содержимое: Тарелки ( 12 шт ) Кастрюли ( 3 шт ) Столовые приборы</div>
+                </div>
+                
+                <div class="qr-code-actions">
+                    <button class="qr-action-button print-button" id="qrPrintButton">
+                        Распечатать
+                    </button>
+                    <button class="qr-action-button save-button" id="qrSaveButton">
+                        Сохранить как изображение
+                    </button>
+                    <button class="qr-action-button share-button" id="qrShareButton">
+                        Поделиться
+                    </button>
+                    <button class="qr-action-button done-button" id="qrDoneButton">
+                        Готово
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Нижнее меню навигации -->
+    <div class="bottom-menu">
+        <div class="menu-item" onclick="showPage('inventory-page')">
+            <div id="inventory-icon" class="menu-icon active"></div>
+            <div id="inventory-text" class="menu-text active">Инвентарь</div>
+        </div>
+        <div class="menu-item" onclick="showPage('boxes-page')">
+            <div id="boxes-icon" class="menu-icon inactive"></div>
+            <div id="boxes-text" class="menu-text inactive">Коробки</div>
+        </div>
+        <div class="menu-item" onclick="showPage('scanner-page')">
+            <div id="scanner-icon" class="menu-icon inactive"></div>
+            <div id="scanner-text" class="menu-text inactive">Сканер</div>
+        </div>
+        <div class="menu-item" onclick="showPage('delivery-page')">
+            <div id="delivery-icon" class="menu-icon inactive"></div>
+            <div id="delivery-text" class="menu-text inactive">Партии</div>
+        </div>
+        <div class="menu-item" onclick="showPage('unpacking-page')">
+            <div id="unpacking-icon" class="menu-icon inactive"></div>
+            <div id="unpacking-text" class="menu-text inactive">Распаковка</div>
+        </div>
+        <div class="menu-item" onclick="showPage('tasks-page')">
+            <div id="tasks-icon" class="menu-icon inactive"></div>
+            <div id="tasks-text" class="menu-text inactive">Задачи</div>
+        </div>
+        <div class="menu-item" onclick="showPage('profile-page')">
+            <div id="profile-icon" class="menu-icon inactive"></div>
+            <div id="profile-text" class="menu-text inactive">Профиль</div>
+        </div>
+    </div>
+
+    <script type="module" src="src/js/main.js"></script>
+</body>
+</html>
